@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milhares Pares e Ímpares - Premium Invertida</title>
+    <title>Milhares Pares e Ímpares - Protegido</title>
     <style>
         :root {
             --bg-page: #dcd7bc;
@@ -17,9 +17,12 @@
             --buy-blue: #0081ff;
         }
 
-        * { box-sizing: border-box; }
-
+        /* Impedir seleção de texto para dificultar cópia */
         body {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-page);
             margin: 0; padding: 10px;
@@ -45,7 +48,7 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* LOGIN */
+        /* LOGIN OVERLAY */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95);
@@ -79,7 +82,6 @@
         .game-id { background-color: yellow; padding: 5px; font-weight: bold; border-right: 1px solid #000; min-width: 40px; }
         .game-nums { display: flex; flex-grow: 1; justify-content: space-around; align-items: center; background: white; font-weight: bold; }
 
-        /* DESTAQUE DO ACERTO 4 NÚMEROS */
         .winner { 
             background-color: #00ff00 !important; 
             border: 3px solid #000 !important;
@@ -89,7 +91,6 @@
         }
         .winner .game-nums { background-color: #00ff00 !important; }
 
-        /* BOTÕES */
         .btn {
             padding: 12px; border: 1px solid #000; font-weight: bold;
             cursor: pointer; color: white; text-transform: uppercase; width: 100%; margin-top: 5px;
@@ -98,7 +99,6 @@
         .btn-buy { background-color: var(--buy-blue); text-decoration: none; display: none; text-align: center; line-height: 1.2; }
         .btn-clear { background-color: var(--red-clear); }
 
-        /* FINANCEIRO */
         .finance-panel { background-color: var(--dark-brown); color: white; padding: 15px; border: 2px solid #000; }
         .finance-table td:last-child { background-color: var(--odd-pink); color: black; font-weight: bold; }
         .faturou-box { 
@@ -107,9 +107,7 @@
         }
     </style>
 </head>
-<body>
-
-    <div id="login-overlay">
+<body oncontextmenu="return false;"> <div id="login-overlay">
         <div class="login-box">
             <h2>ACESSO AO SISTEMA</h2>
             <input type="password" id="pass-input" placeholder="DIGITE A SENHA" style="border: 1px solid #000; margin: 15px 0; padding: 10px;"><br>
@@ -153,7 +151,7 @@
 
                     <div class="button-group">
                         <button id="btn-compartilhar" class="btn btn-share" onclick="compartilhar()">📲 Compartilhar Jogos</button>
-                        <a id="btn-comprar" href="https://mpago.la/1gnnpkZ" target="_blank" class="btn btn-buy">💰 COMPRAR VERSÃO COMPLETA<br><small>(Liberar Compartilhamento)</small></a>
+                        <a id="btn-comprar" href="https://mpago.la/1gnnpkZ" target="_blank" class="btn btn-buy">💰 COMPRAR VERSÃO COMPLETA</a>
                         <button class="btn btn-clear" onclick="limparTudo()">🗑️ Limpar Tudo</button>
                     </div>
                 </div>
@@ -174,42 +172,50 @@
                 </div>
                 <div style="text-align: center; font-weight: bold; margin-top: 10px; font-size: 1.2rem;">VOCÊ FATUROU</div>
                 <div class="faturou-box" id="faturou-display">R$ 0.00</div>
-                <p style="font-size: 0.8rem; text-align: center; font-weight: bold;">* Cálculo: (Cotação / 24) por acerto</p>
             </div>
         </div>
     </div>
 
     <script>
-        const SENHA_MESTRE = "MILHAPARESEIMPARES10";
+        // --- PROTEÇÃO DE CÓDIGO FONTE ---
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) return false; // F12
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) return false; // Ctrl+S
+        };
+
+        const SENHA_MESTRE = "MILHAPARESEIMPARE10";
         let userType = "none";
         let jogosAtuais = [];
 
         window.onload = function() {
-            const auth = localStorage.getItem('milha_auth_v2');
-            let trials = parseInt(localStorage.getItem('trial_count_v2') || "3");
+            const auth = localStorage.getItem('milha_auth_v3');
+            let trials = parseInt(localStorage.getItem('trial_count_v3') || "3");
             document.getElementById('trial-info').innerText = `Acessos de Teste: ${trials}`;
             
             if (auth === 'full') {
                 liberarSite('full');
             } else if (trials <= 0) {
                 document.getElementById('btn-teste').style.display = 'none';
-                document.getElementById('trial-info').innerText = "Acessos de teste esgotados!";
+                document.getElementById('trial-info').innerText = "Acessos esgotados!";
             }
             update();
         }
 
         function verificarSenha() {
             if (document.getElementById('pass-input').value === SENHA_MESTRE) {
-                localStorage.setItem('milha_auth_v2', 'full');
+                localStorage.setItem('milha_auth_v3', 'full');
                 liberarSite('full');
             } else { alert("Senha Incorreta!"); }
         }
 
         function acessoTeste() {
-            let trials = parseInt(localStorage.getItem('trial_count_v2') || "3");
+            let trials = parseInt(localStorage.getItem('trial_count_v3') || "3");
             if (trials > 0) {
                 trials--;
-                localStorage.setItem('trial_count_v2', trials);
+                localStorage.setItem('trial_count_v3', trials);
                 liberarSite('trial');
             }
         }
@@ -229,7 +235,6 @@
             const vJogo = parseFloat(document.getElementById('v-jogo').value) || 0;
             const cot = parseFloat(document.getElementById('cot').value) || 0;
 
-            // Gerar Combinações
             const comboO = [];
             for(let i=0; i<4; i++) for(let j=i+1; j<4; j++) comboO.push([odds[i], odds[j]]);
             const comboE = [];
@@ -246,24 +251,16 @@
                 const div = document.createElement('div');
                 div.className = 'game-row';
                 let isWin = false;
-                
                 if(resVal.length === 4) {
                     let rSorted = resVal.split('').sort().join('');
                     let gSorted = g.join('').split('').sort().join('');
                     if(rSorted === gSorted) { isWin = true; winCount++; }
                 }
-                
                 if(isWin) div.classList.add('winner');
-                
-                div.innerHTML = `<div class="game-id">J ${i+1}</div>
-                    <div class="game-nums">
-                        <span>${g[0]}</span><span>${g[1]}</span><span>${g[2]}</span><span>${g[3]}</span>
-                    </div>`;
+                div.innerHTML = `<div class="game-id">J ${i+1}</div><div class="game-nums"><span>${g[0]}</span><span>${g[1]}</span><span>${g[2]}</span><span>${g[3]}</span></div>`;
                 list.appendChild(div);
             });
 
-            // --- NOVO CÁLCULO MILHAR INVERTIDA ---
-            // Regra: Cotação x Valor por Jogo / 24
             const premioPorAcerto = (cot * vJogo) / 24;
             const totalPre = winCount * premioPorAcerto;
             const totalAp = 36 * vJogo;
@@ -277,7 +274,7 @@
             document.getElementById('v-luc').style.color = lucro >= 0 ? 'green' : 'red';
 
             if (winCount > 0 && resVal.length === 4) {
-                setTimeout(() => { alert(`⭐ MILHAR PREMIADA! ⭐\nVocê teve ${winCount} acerto(s) de 4 números!\nPrêmio Total: R$ ${totalPre.toFixed(2)}`); }, 300);
+                setTimeout(() => { alert(`⭐ MILHAR PREMIADA! ⭐\nAcertos: ${winCount}\nPrêmio Total: R$ ${totalPre.toFixed(2)}`); }, 300);
             }
         }
 
