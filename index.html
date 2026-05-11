@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milhares Pares e Ímpares - Premium Invertida</title>
+    <style>
+        :root {
+            --bg-page: #dcd7bc;
+            --gold: #c5b358;
+            --odd-pink: #ff99ff;
+            --even-blue: #99ccff;
+            --result-cyan: #00ccff;
+            --dark-brown: #4a3728;
+            --green-share: #25d366;
+            --red-clear: #e74c3c;
+            --buy-blue: #0081ff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-page);
+            margin: 0; padding: 10px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* ANIMAÇÃO DO TÍTULO */
+        @keyframes shine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .main-title {
+            background: linear-gradient(270deg, #c5b358, #ffffff, #c5b358, #8b7d3a);
+            background-size: 400% 400%;
+            animation: shine 4s ease infinite;
+            width: 100%; max-width: 1200px;
+            text-align: center; padding: 20px;
+            font-size: clamp(1.5rem, 6vw, 2.5rem);
+            font-weight: 900; border: 4px solid #000;
+            margin-bottom: 20px; text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* LOGIN */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .login-box {
+            background: var(--bg-page); padding: 30px; border-radius: 15px;
+            text-align: center; width: 90%; max-width: 400px; border: 3px solid var(--gold);
+        }
+
+        #site-content { display: none; width: 100%; max-width: 1200px; }
+
+        .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 992px) { .main-container { grid-template-columns: 320px 1fr 350px; } }
+
+        .input-card {
+            background: white; padding: 15px; border: 1px solid #000;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+        input { width: 100%; border: none; text-align: center; font-size: 1.2rem; outline: none; }
+
+        /* JOGOS E DESTAQUE */
+        .games-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px; background: #fff; padding: 15px; border: 1px solid #000;
+        }
+        .game-row { display: flex; border: 1px solid #000; transition: 0.3s; }
+        .game-id { background-color: yellow; padding: 5px; font-weight: bold; border-right: 1px solid #000; min-width: 40px; }
+        .game-nums { display: flex; flex-grow: 1; justify-content: space-around; align-items: center; background: white; font-weight: bold; }
+
+        /* DESTAQUE DO ACERTO 4 NÚMEROS */
+        .winner { 
+            background-color: #00ff00 !important; 
+            border: 3px solid #000 !important;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00ff00;
+            z-index: 10;
+        }
+        .winner .game-nums { background-color: #00ff00 !important; }
+
+        /* BOTÕES */
+        .btn {
+            padding: 12px; border: 1px solid #000; font-weight: bold;
+            cursor: pointer; color: white; text-transform: uppercase; width: 100%; margin-top: 5px;
+        }
+        .btn-share { background-color: var(--green-share); color: #000; }
+        .btn-buy { background-color: var(--buy-blue); text-decoration: none; display: none; text-align: center; line-height: 1.2; }
+        .btn-clear { background-color: var(--red-clear); }
+
+        /* FINANCEIRO */
+        .finance-panel { background-color: var(--dark-brown); color: white; padding: 15px; border: 2px solid #000; }
+        .finance-table td:last-child { background-color: var(--odd-pink); color: black; font-weight: bold; }
+        .faturou-box { 
+            background: red; color: white; text-align: center; padding: 25px; 
+            font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: bold; border: 2px solid #000; margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>ACESSO AO SISTEMA</h2>
+            <input type="password" id="pass-input" placeholder="DIGITE A SENHA" style="border: 1px solid #000; margin: 15px 0; padding: 10px;"><br>
+            <button class="btn" style="background: var(--gold); color: #000;" onclick="verificarSenha()">ENTRAR</button>
+            <hr style="margin: 20px 0;">
+            <p id="trial-info">Acessos de Teste: 3</p>
+            <button class="btn" style="background: #555;" id="btn-teste" onclick="acessoTeste()">ENTRAR COMO TESTE</button>
+        </div>
+    </div>
+
+    <div id="site-content">
+        <div class="main-title">MILHARES PARES E ÍMPARES</div>
+
+        <div class="main-container">
+            <div class="left-col">
+                <div class="input-card">
+                    <table>
+                        <tr style="background: var(--odd-pink);">
+                            <th colspan="5">DIGITE 4 ÍMPARES E 4 PARES</th>
+                        </tr>
+                        <tr>
+                            <td style="background: var(--odd-pink); font-weight: bold;">ÍMPARES</td>
+                            <td><input type="number" class="in-odd" value="1" oninput="update()"></td>
+                            <td><input type="number" class="in-odd" value="3" oninput="update()"></td>
+                            <td><input type="number" class="in-odd" value="5" oninput="update()"></td>
+                            <td><input type="number" class="in-odd" value="7" oninput="update()"></td>
+                        </tr>
+                        <tr>
+                            <td style="background: var(--even-blue); font-weight: bold;">PARES</td>
+                            <td><input type="number" class="in-even" value="2" oninput="update()"></td>
+                            <td><input type="number" class="in-even" value="4" oninput="update()"></td>
+                            <td><input type="number" class="in-even" value="6" oninput="update()"></td>
+                            <td><input type="number" class="in-even" value="8" oninput="update()"></td>
+                        </tr>
+                    </table>
+
+                    <div style="background: var(--result-cyan); padding: 10px; border: 1px solid #000;">
+                        <div style="text-align: center; font-weight: bold; margin-bottom: 5px;">CONFERIDOR (MILHAR INVERTIDA)</div>
+                        <input type="text" id="res-milhar" placeholder="Ex: 1234" maxlength="4" oninput="update()">
+                    </div>
+
+                    <div class="button-group">
+                        <button id="btn-compartilhar" class="btn btn-share" onclick="compartilhar()">📲 Compartilhar Jogos</button>
+                        <a id="btn-comprar" href="https://mpago.la/1gnnpkZ" target="_blank" class="btn btn-buy">💰 COMPRAR VERSÃO COMPLETA<br><small>(Liberar Compartilhamento)</small></a>
+                        <button class="btn btn-clear" onclick="limparTudo()">🗑️ Limpar Tudo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="games-grid" id="games-list"></div>
+
+            <div class="right-col">
+                <div class="finance-panel">
+                    <table class="finance-table">
+                        <tr><td>COTAÇÃO</td><td>R$ <input type="number" id="cot" value="8000" oninput="update()"></td></tr>
+                        <tr><td>VALOR APOSTADO</td><td id="v-ap" style="color: red;">R$ 36.00</td></tr>
+                        <tr><td>VALOR POR JOGO</td><td>R$ <input type="number" id="v-jogo" value="1" oninput="update()"></td></tr>
+                        <tr><td>PRÊMIO (INVERTIDA)</td><td id="v-pre">R$ 0.00</td></tr>
+                        <tr><td>LUCRO TOTAL</td><td id="v-luc">R$ -36.00</td></tr>
+                        <tr><td>MILHAR PREMIADA</td><td id="count-pre">0</td></tr>
+                    </table>
+                </div>
+                <div style="text-align: center; font-weight: bold; margin-top: 10px; font-size: 1.2rem;">VOCÊ FATUROU</div>
+                <div class="faturou-box" id="faturou-display">R$ 0.00</div>
+                <p style="font-size: 0.8rem; text-align: center; font-weight: bold;">* Cálculo: (Cotação / 24) por acerto</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SENHA_MESTRE = "MILHAPARESEIMPARES10";
+        let userType = "none";
+        let jogosAtuais = [];
+
+        window.onload = function() {
+            const auth = localStorage.getItem('milha_auth_v2');
+            let trials = parseInt(localStorage.getItem('trial_count_v2') || "3");
+            document.getElementById('trial-info').innerText = `Acessos de Teste: ${trials}`;
+            
+            if (auth === 'full') {
+                liberarSite('full');
+            } else if (trials <= 0) {
+                document.getElementById('btn-teste').style.display = 'none';
+                document.getElementById('trial-info').innerText = "Acessos de teste esgotados!";
+            }
+            update();
+        }
+
+        function verificarSenha() {
+            if (document.getElementById('pass-input').value === SENHA_MESTRE) {
+                localStorage.setItem('milha_auth_v2', 'full');
+                liberarSite('full');
+            } else { alert("Senha Incorreta!"); }
+        }
+
+        function acessoTeste() {
+            let trials = parseInt(localStorage.getItem('trial_count_v2') || "3");
+            if (trials > 0) {
+                trials--;
+                localStorage.setItem('trial_count_v2', trials);
+                liberarSite('trial');
+            }
+        }
+
+        function liberarSite(type) {
+            userType = type;
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('site-content').style.display = 'block';
+            document.getElementById('btn-compartilhar').style.display = (type === 'full') ? 'block' : 'none';
+            document.getElementById('btn-comprar').style.display = (type === 'trial') ? 'block' : 'none';
+        }
+
+        function update() {
+            const odds = Array.from(document.querySelectorAll('.in-odd')).map(i => i.value);
+            const evens = Array.from(document.querySelectorAll('.in-even')).map(i => i.value);
+            const resVal = document.getElementById('res-milhar').value;
+            const vJogo = parseFloat(document.getElementById('v-jogo').value) || 0;
+            const cot = parseFloat(document.getElementById('cot').value) || 0;
+
+            // Gerar Combinações
+            const comboO = [];
+            for(let i=0; i<4; i++) for(let j=i+1; j<4; j++) comboO.push([odds[i], odds[j]]);
+            const comboE = [];
+            for(let i=0; i<4; i++) for(let j=i+1; j<4; j++) comboE.push([evens[i], evens[j]]);
+            
+            jogosAtuais = [];
+            comboO.forEach(o => comboE.forEach(e => jogosAtuais.push([...o, ...e].sort())));
+
+            const list = document.getElementById('games-list');
+            list.innerHTML = '';
+            let winCount = 0;
+
+            jogosAtuais.forEach((g, i) => {
+                const div = document.createElement('div');
+                div.className = 'game-row';
+                let isWin = false;
+                
+                if(resVal.length === 4) {
+                    let rSorted = resVal.split('').sort().join('');
+                    let gSorted = g.join('').split('').sort().join('');
+                    if(rSorted === gSorted) { isWin = true; winCount++; }
+                }
+                
+                if(isWin) div.classList.add('winner');
+                
+                div.innerHTML = `<div class="game-id">J ${i+1}</div>
+                    <div class="game-nums">
+                        <span>${g[0]}</span><span>${g[1]}</span><span>${g[2]}</span><span>${g[3]}</span>
+                    </div>`;
+                list.appendChild(div);
+            });
+
+            // --- NOVO CÁLCULO MILHAR INVERTIDA ---
+            // Regra: Cotação x Valor por Jogo / 24
+            const premioPorAcerto = (cot * vJogo) / 24;
+            const totalPre = winCount * premioPorAcerto;
+            const totalAp = 36 * vJogo;
+            const lucro = totalPre - totalAp;
+
+            document.getElementById('v-ap').innerText = `R$ ${totalAp.toFixed(2)}`;
+            document.getElementById('v-pre').innerText = `R$ ${totalPre.toFixed(2)}`;
+            document.getElementById('v-luc').innerText = `R$ ${lucro.toFixed(2)}`;
+            document.getElementById('count-pre').innerText = winCount;
+            document.getElementById('faturou-display').innerText = `R$ ${totalPre.toFixed(2)}`;
+            document.getElementById('v-luc').style.color = lucro >= 0 ? 'green' : 'red';
+
+            if (winCount > 0 && resVal.length === 4) {
+                setTimeout(() => { alert(`⭐ MILHAR PREMIADA! ⭐\nVocê teve ${winCount} acerto(s) de 4 números!\nPrêmio Total: R$ ${totalPre.toFixed(2)}`); }, 300);
+            }
+        }
+
+        function compartilhar() {
+            let txt = "🚀 *FECHAMENTO MILHAR - MEUS JOGOS*\n\n";
+            jogosAtuais.forEach((g, i) => txt += `J${i+1}: [ ${g.join(' ')} ]\n`);
+            txt += "\nBoa sorte! 🍀";
+            if (navigator.share) { navigator.share({ title: 'Jogos', text: txt }); }
+            else { navigator.clipboard.writeText(txt); alert("Jogos copiados!"); }
+        }
+
+        function limparTudo() {
+            if(confirm("Deseja limpar todos os números?")) {
+                document.querySelectorAll('.in-odd, .in-even, #res-milhar').forEach(i => i.value = '');
+                update();
+            }
+        }
+    </script>
+</body>
+</html>
