@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SISTEMA MILHAR - ESTÁVEL V8</title>
+<title>SISTEMA MILHAR - VERSÃO ESTÁVEL V9</title>
 
 <style>
 :root{
@@ -61,7 +61,7 @@ body{
     left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.95);
+    background:rgba(0,0,0,0.98);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -73,7 +73,7 @@ body{
     padding:30px;
     border-radius:15px;
     text-align:center;
-    width:90%;
+    width:95%;
     max-width:400px;
     border:3px solid var(--gold);
 }
@@ -241,6 +241,65 @@ input{
     border:2px solid #000;
     margin:10px 0;
 }
+
+/* POPUP */
+
+#popup-win{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.88);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999999;
+    padding:20px;
+}
+
+.popup-box{
+    background:#00ff00;
+    border:5px solid #fff;
+    border-radius:20px;
+    width:100%;
+    max-width:450px;
+    padding:30px 20px;
+    text-align:center;
+    box-shadow:0 0 30px #00ff00;
+    animation:popupShow .3s ease;
+}
+
+.popup-box h1{
+    margin:0;
+    font-size:2rem;
+    color:#000;
+}
+
+.popup-box p{
+    font-size:1.3rem;
+    font-weight:bold;
+    color:#000;
+}
+
+.popup-box button{
+    background:#000;
+    color:#fff;
+    border:none;
+    padding:12px 25px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+@keyframes popupShow{
+    from{
+        transform:scale(.7);
+        opacity:0;
+    }
+
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
 </style>
 </head>
 
@@ -248,7 +307,10 @@ input{
 
 <div id="login-overlay">
     <div class="login-box">
-        <h2 style="margin-bottom:20px;">SISTEMA MILHAR</h2>
+
+        <h2 style="margin-bottom:20px;">
+            CONTROLO DE ACESSO
+        </h2>
 
         <input
             type="password"
@@ -257,19 +319,19 @@ input{
             style="border:1px solid #000;margin-bottom:15px;padding:12px;width:100%;background:#fff;"
         >
 
-        <br>
-
         <button
             class="btn"
             style="background:var(--gold);color:#000;"
             onclick="verificarSenha()"
         >
-            DESBLOQUEAR ACESSO
+            ENTRAR NO SISTEMA
         </button>
 
         <hr style="margin:20px 0;border:0.5px solid #aaa;">
 
-        <p id="trial-info">Acessos grátis: 3</p>
+        <p id="trial-info">
+            Acessos de Teste: 3
+        </p>
 
         <button
             class="btn"
@@ -279,6 +341,7 @@ input{
         >
             MODO TESTE (18 JOGOS)
         </button>
+
     </div>
 </div>
 
@@ -298,11 +361,12 @@ input{
 
                     <tr style="background:var(--odd-pink);">
                         <th colspan="5">
-                            DIGITE 4 ÍMPARES E 4 PARES
+                            ESCOLHA 4 ÍMPARES E 4 PARES
                         </th>
                     </tr>
 
                     <tr>
+
                         <td style="background:var(--odd-pink);font-weight:bold;">
                             ÍMPARES
                         </td>
@@ -311,9 +375,11 @@ input{
                         <td><input type="number" class="in-odd" value="3" oninput="update()"></td>
                         <td><input type="number" class="in-odd" value="5" oninput="update()"></td>
                         <td><input type="number" class="in-odd" value="7" oninput="update()"></td>
+
                     </tr>
 
                     <tr>
+
                         <td style="background:var(--even-blue);font-weight:bold;">
                             PARES
                         </td>
@@ -322,6 +388,7 @@ input{
                         <td><input type="number" class="in-even" value="4" oninput="update()"></td>
                         <td><input type="number" class="in-even" value="6" oninput="update()"></td>
                         <td><input type="number" class="in-even" value="8" oninput="update()"></td>
+
                     </tr>
 
                 </table>
@@ -384,46 +451,32 @@ input{
 
                     <tr>
                         <td>COTAÇÃO</td>
-                        <td>
-                            R$
-                            <input type="number" id="cot" value="8000" oninput="update()">
-                        </td>
+                        <td>R$ <input type="number" id="cot" value="8000" oninput="update()"></td>
                     </tr>
 
                     <tr>
                         <td>VALOR APOSTADO</td>
-                        <td id="v-ap" style="color:red;">
-                            R$ 36.00
-                        </td>
+                        <td id="v-ap" style="color:red;">R$ 36.00</td>
                     </tr>
 
                     <tr>
                         <td>VALOR POR JOGO</td>
-                        <td>
-                            R$
-                            <input type="number" id="v-jogo" value="1" oninput="update()">
-                        </td>
+                        <td>R$ <input type="number" id="v-jogo" value="1" oninput="update()"></td>
                     </tr>
 
                     <tr>
                         <td>PRÊMIO (INVERTIDA)</td>
-                        <td id="v-pre">
-                            R$ 0.00
-                        </td>
+                        <td id="v-pre">R$ 0.00</td>
                     </tr>
 
                     <tr>
                         <td>LUCRO TOTAL</td>
-                        <td id="v-luc">
-                            R$ -36.00
-                        </td>
+                        <td id="v-luc">R$ -36.00</td>
                     </tr>
 
                     <tr>
                         <td>ACERTOS</td>
-                        <td id="count-pre">
-                            0
-                        </td>
+                        <td id="count-pre">0</td>
                     </tr>
 
                 </table>
@@ -444,16 +497,48 @@ input{
 
 </div>
 
+<!-- POPUP -->
+
+<div id="popup-win">
+
+    <div class="popup-box">
+
+        <h1>
+            🎉 PARABÉNS 🎉
+        </h1>
+
+        <p>
+            VOCÊ ACERTOU<br>
+            1 MILHAR INVERTIDA!
+        </p>
+
+        <button onclick="fecharPopup()">
+            FECHAR
+        </button>
+
+    </div>
+
+</div>
+
+<!-- AUDIO -->
+
+<audio id="win-audio" preload="auto">
+    <source src="https://www.soundjay.com/human/yes-1.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 
-document.onkeydown = function(e){
+document.onkeydown=function(e){
 
     if(
-        e.keyCode == 123 ||
-        (e.ctrlKey && (
-            e.keyCode == 'U'.charCodeAt(0) ||
-            e.keyCode == 'S'.charCodeAt(0)
-        ))
+        e.keyCode==123 ||
+        (
+            e.ctrlKey &&
+            (
+                e.keyCode=='U'.charCodeAt(0) ||
+                e.keyCode=='S'.charCodeAt(0)
+            )
+        )
     ){
         return false;
     }
@@ -462,46 +547,54 @@ document.onkeydown = function(e){
         e.ctrlKey &&
         e.shiftKey &&
         (
-            e.keyCode == 'I'.charCodeAt(0) ||
-            e.keyCode == 'J'.charCodeAt(0)
+            e.keyCode=='I'.charCodeAt(0) ||
+            e.keyCode=='J'.charCodeAt(0)
         )
     ){
         return false;
     }
 };
 
-const SENHA_MESTRE = "MILHAPARESEIMPARES10";
+const SENHA_MESTRE="MILHAPARESEIMPARES10";
 
-let userType = "none";
-let jogosAtuais = [];
+let userType="none";
+let jogosAtuais=[];
+let popupJaMostrado=false;
 
-window.onload = function(){
+window.onload=function(){
 
-    const auth = localStorage.getItem('milha_auth_v8');
-    let trials = parseInt(localStorage.getItem('trial_count_v8') || "3");
+    const auth=localStorage.getItem('milha_auth_v9');
 
-    document.getElementById('trial-info').innerText =
-        `Acessos grátis: ${trials}`;
+    let trials=parseInt(
+        localStorage.getItem('trial_count_v9') || "3"
+    );
 
-    if(auth === 'full'){
+    document.getElementById('trial-info').innerText=
+        `Acessos de Teste: ${trials}`;
+
+    if(auth==='full'){
+
         liberarSite('full');
+
+    }else if(trials<=0){
+
+        document.getElementById('btn-teste').style.display='none';
+
+        document.getElementById('trial-info').innerText=
+            "Acessos de teste esgotados!";
     }
 
-    if(trials <= 0){
-        document.getElementById('btn-teste').style.display = 'none';
-        document.getElementById('trial-info').innerText =
-            "Acessos esgotados!";
-    }
+    update();
 };
 
 function verificarSenha(){
 
-    const digitada =
+    const digitada=
         document.getElementById('pass-input').value.trim();
 
-    if(digitada === SENHA_MESTRE){
+    if(digitada===SENHA_MESTRE){
 
-        localStorage.setItem('milha_auth_v8', 'full');
+        localStorage.setItem('milha_auth_v9','full');
 
         liberarSite('full');
 
@@ -513,121 +606,157 @@ function verificarSenha(){
 
 function acessoTeste(){
 
-    let trials =
-        parseInt(localStorage.getItem('trial_count_v8') || "3");
+    let trials=parseInt(
+        localStorage.getItem('trial_count_v9') || "3"
+    );
 
-    if(trials > 0){
+    if(trials>0){
 
         trials--;
 
-        localStorage.setItem('trial_count_v8', trials);
+        localStorage.setItem('trial_count_v9',trials);
 
         liberarSite('trial');
 
     }else{
 
-        alert("Acessos de teste esgotados!");
+        alert("Créditos de teste esgotados!");
     }
 }
 
 function liberarSite(type){
 
-    userType = type;
+    userType=type;
 
-    document.getElementById('login-overlay').style.display =
-        'none';
+    document.getElementById('login-overlay').style.display='none';
 
-    document.getElementById('site-content').style.display =
-        'block';
+    document.getElementById('site-content').style.display='block';
 
-    document.getElementById('btn-compartilhar').style.display =
-        (type === 'full') ? 'flex' : 'none';
+    document.getElementById('btn-compartilhar').style.display=
+        (type==='full') ? 'flex' : 'none';
 
-    document.getElementById('btn-comprar').style.display =
-        (type === 'trial') ? 'flex' : 'none';
+    document.getElementById('btn-comprar').style.display=
+        (type==='trial') ? 'flex' : 'none';
 
     update();
 }
 
+function tocarSomWin(){
+
+    const audio=document.getElementById('win-audio');
+
+    audio.currentTime=0;
+
+    audio.play().catch(()=>{});
+}
+
+function mostrarPopup(){
+
+    if(popupJaMostrado) return;
+
+    popupJaMostrado=true;
+
+    document.getElementById('popup-win').style.display='flex';
+
+    tocarSomWin();
+}
+
+function fecharPopup(){
+
+    document.getElementById('popup-win').style.display='none';
+}
+
 function update(){
 
-    const odds =
-        Array.from(document.querySelectorAll('.in-odd'))
-        .map(i => i.value);
+    popupJaMostrado=false;
 
-    const evens =
-        Array.from(document.querySelectorAll('.in-even'))
-        .map(i => i.value);
+    const odds=Array.from(
+        document.querySelectorAll('.in-odd')
+    ).map(i=>i.value);
 
-    const resVal =
+    const evens=Array.from(
+        document.querySelectorAll('.in-even')
+    ).map(i=>i.value);
+
+    const resVal=
         document.getElementById('res-milhar').value;
 
-    const vJogo =
+    const vJogo=
         parseFloat(document.getElementById('v-jogo').value) || 0;
 
-    const cot =
+    const cot=
         parseFloat(document.getElementById('cot').value) || 0;
 
-    const comboO = [];
+    const comboO=[];
 
     for(let i=0;i<4;i++){
+
         for(let j=i+1;j<4;j++){
+
             comboO.push([odds[i],odds[j]]);
         }
     }
 
-    const comboE = [];
+    const comboE=[];
 
     for(let i=0;i<4;i++){
+
         for(let j=i+1;j<4;j++){
+
             comboE.push([evens[i],evens[j]]);
         }
     }
 
-    jogosAtuais = [];
+    jogosAtuais=[];
 
-    comboO.forEach(o =>
-        comboE.forEach(e =>
-            jogosAtuais.push([...o,...e].sort())
-        )
-    );
+    comboO.forEach(o=>{
 
-    const list =
+        comboE.forEach(e=>{
+
+            jogosAtuais.push([...o,...e].sort());
+        });
+    });
+
+    const list=
         document.getElementById('games-list');
 
-    list.innerHTML = '';
+    list.innerHTML='';
 
-    let winCount = 0;
+    let winCount=0;
 
     jogosAtuais.forEach((g,i)=>{
 
-        let isWin = false;
+        let isWin=false;
 
-        if(resVal.length === 4){
+        if(resVal.length===4){
 
-            let rS =
+            let rS=
                 resVal.split('').sort().join('');
 
-            let gS =
+            let gS=
                 g.join('').split('').sort().join('');
 
-            if(rS === gS){
-                isWin = true;
+            if(rS===gS){
+
+                isWin=true;
+
                 winCount++;
+
+                mostrarPopup();
             }
         }
 
-        if(userType === 'trial' && i >= 18){
+        if(userType==='trial' && i>=18){
 
-            if(i === 18){
+            if(i===18){
 
-                const msg =
+                const msg=
                     document.createElement('div');
 
-                msg.className = 'locked-msg';
+                msg.className='locked-msg';
 
-                msg.innerText =
-                    "🔒 COMPRE PARA VER OS OUTROS 18 JOGOS!";
+                msg.innerText=
+                    "🔒 COMPRE A VERSÃO COMPLETA PARA VER O RESTO!";
 
                 list.appendChild(msg);
             }
@@ -635,67 +764,61 @@ function update(){
             return;
         }
 
-        const div =
+        const div=
             document.createElement('div');
 
-        div.className =
-            'game-row' + (isWin ? ' winner' : '');
+        div.className=
+            'game-row'+(isWin ? ' winner' : '');
 
-        div.innerHTML = `
-            <div class="game-id">
-                J ${i+1}
-            </div>
-
+        div.innerHTML=
+            `<div class="game-id">J ${i+1}</div>
             <div class="game-nums">
                 <span>${g[0]}</span>
                 <span>${g[1]}</span>
                 <span>${g[2]}</span>
                 <span>${g[3]}</span>
-            </div>
-        `;
+            </div>`;
 
         list.appendChild(div);
     });
 
-    const premioAcerto =
-        (cot * vJogo) / 24;
+    const premioAcerto=
+        (cot*vJogo)/24;
 
-    const totalPre =
-        winCount * premioAcerto;
+    const totalPre=
+        winCount*premioAcerto;
 
-    const totalAp =
-        36 * vJogo;
+    const totalAp=
+        36*vJogo;
 
-    const lucro =
-        totalPre - totalAp;
+    const lucro=
+        totalPre-totalAp;
 
-    document.getElementById('v-ap').innerText =
+    document.getElementById('v-ap').innerText=
         `R$ ${totalAp.toFixed(2)}`;
 
-    document.getElementById('v-pre').innerText =
+    document.getElementById('v-pre').innerText=
         `R$ ${totalPre.toFixed(2)}`;
 
-    document.getElementById('v-luc').innerText =
+    document.getElementById('v-luc').innerText=
         `R$ ${lucro.toFixed(2)}`;
 
-    document.getElementById('count-pre').innerText =
+    document.getElementById('count-pre').innerText=
         winCount;
 
-    document.getElementById('faturou-display').innerText =
+    document.getElementById('faturou-display').innerText=
         `R$ ${totalPre.toFixed(2)}`;
 
-    document.getElementById('v-luc').style.color =
-        lucro >= 0 ? 'green' : 'red';
+    document.getElementById('v-luc').style.color=
+        lucro>=0 ? 'green' : 'red';
 }
 
 function compartilhar(){
 
-    if(jogosAtuais.length === 0){
-        return;
-    }
+    if(jogosAtuais.length===0) return;
 
-    let txt =
-        jogosAtuais.map(g => g.join('')).join(' ');
+    let txt=
+        jogosAtuais.map(g=>g.join('')).join(' ');
 
     if(navigator.share){
 
@@ -714,11 +837,11 @@ function compartilhar(){
 
 function limparTudo(){
 
-    if(confirm("Limpar tudo?")){
+    if(confirm("Deseja limpar todos os números?")){
 
         document
-        .querySelectorAll('.in-odd, .in-even, #res-milhar')
-        .forEach(i => i.value = '');
+            .querySelectorAll('.in-odd,.in-even,#res-milhar')
+            .forEach(i=>i.value='');
 
         update();
     }
