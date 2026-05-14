@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milhares Pares e Ímpares - Simetria Total</title>
+    <title>Milhares Pares e Ímpares - Versão Estratégica</title>
     <style>
         :root {
             --bg-page: #dcd7bc;
@@ -18,16 +18,15 @@
         }
 
         /* PROTEÇÃO: IMPEDIR SELEÇÃO */
-        * { box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        * { box-sizing: border-box; -webkit-user-select: none; user-select: none; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--bg-page);
             margin: 0; padding: 10px;
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* ANIMAÇÃO TÍTULO */
         @keyframes shine {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -40,12 +39,11 @@
             animation: shine 4s ease infinite;
             width: 100%; max-width: 1200px;
             text-align: center; padding: 20px;
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-size: clamp(1.2rem, 5vw, 2.5rem);
             font-weight: 900; border: 4px solid #000;
             margin-bottom: 20px; text-transform: uppercase;
         }
 
-        /* LOGIN */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95);
@@ -61,7 +59,6 @@
         .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 992px) { .main-container { grid-template-columns: 320px 1fr 350px; } }
 
-        /* INPUTS E BOTÕES SIMÉTRICOS */
         .input-card {
             background: white; padding: 15px; border: 1px solid #000;
             display: flex; flex-direction: column; gap: 15px;
@@ -71,26 +68,19 @@
         th, td { border: 1px solid #000; padding: 8px; text-align: center; }
         input { width: 100%; border: none; text-align: center; font-size: 1.2rem; outline: none; background: transparent; }
 
-        .button-group {
-            display: flex; flex-direction: column; gap: 10px; width: 100%;
-        }
+        .button-group { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 
-        /* PADRONIZAÇÃO DE BOTÕES */
         .btn {
             display: flex; align-items: center; justify-content: center;
-            height: 50px; width: 100%; 
-            border: 1px solid #000; font-weight: bold;
+            height: 50px; width: 100%; border: 1px solid #000; font-weight: bold;
             cursor: pointer; color: white; text-transform: uppercase;
-            text-decoration: none; font-size: 0.9rem;
-            transition: transform 0.1s;
+            text-decoration: none; font-size: 0.9rem; transition: transform 0.1s;
         }
         .btn:active { transform: scale(0.98); }
-
         .btn-share { background-color: var(--green-share); color: #000; }
         .btn-buy { background-color: var(--buy-blue); display: none; }
         .btn-clear { background-color: var(--red-clear); }
 
-        /* GRELHA DE JOGOS */
         .games-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 8px; background: #fff; padding: 15px; border: 1px solid #000;
@@ -99,35 +89,35 @@
         .game-id { background-color: yellow; padding: 5px; font-weight: bold; border-right: 1px solid #000; min-width: 40px; text-align: center; }
         .game-nums { display: flex; flex-grow: 1; justify-content: space-around; align-items: center; background: white; font-weight: bold; }
 
-        .winner { 
-            background-color: #00ff00 !important; 
-            border: 2px solid #000 !important;
-            box-shadow: 0 0 10px #00ff00;
-        }
+        .winner { background-color: #00ff00 !important; box-shadow: 0 0 10px #00ff00; }
         .winner .game-nums { background-color: #00ff00 !important; }
 
-        /* PAINEL FINANCEIRO */
+        /* MENSAGEM DE BLOQUEIO ESTRATÉGICO */
+        .locked-msg {
+            grid-column: 1 / -1; background: #f8f8f8; border: 2px dashed #888;
+            padding: 20px; text-align: center; font-weight: bold; color: #d35400;
+        }
+
         .finance-panel { background-color: var(--dark-brown); color: white; padding: 15px; border: 2px solid #000; }
         .finance-table td:last-child { background-color: var(--odd-pink); color: black; font-weight: bold; }
-        .faturou-box { 
-            background: red; color: white; text-align: center; padding: 25px; 
-            font-size: 2rem; font-weight: bold; border: 2px solid #000; margin: 10px 0;
-        }
+        .faturou-box { background: red; color: white; text-align: center; padding: 25px; font-size: 2rem; font-weight: bold; border: 2px solid #000; margin: 10px 0; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
+    <!-- LOGIN -->
     <div id="login-overlay">
         <div class="login-box">
-            <h2>ACESSO RESTRITO</h2>
+            <h2>ACESSO AO SISTEMA</h2>
             <input type="password" id="pass-input" placeholder="SENHA" style="border: 1px solid #000; margin: 15px 0; padding: 10px; background: #fff;"><br>
             <button class="btn" style="background: var(--gold); color: #000;" onclick="verificarSenha()">ENTRAR NO SISTEMA</button>
             <hr style="margin: 20px 0; border: 0.5px solid #aaa;">
-            <p id="trial-info">Testes restantes: 3</p>
-            <button class="btn" style="background: #555;" id="btn-teste" onclick="acessoTeste()">ENTRAR COMO TESTE</button>
+            <p id="trial-info">Acessos grátis restantes: 3</p>
+            <button class="btn" style="background: #555;" id="btn-teste" onclick="acessoTeste()">ENTRAR COMO TESTE (LIMITADO)</button>
         </div>
     </div>
 
+    <!-- SITE -->
     <div id="site-content">
         <div class="main-title">MILHA PARES E ÍMPARES</div>
 
@@ -136,7 +126,7 @@
                 <div class="input-card">
                     <table>
                         <tr style="background: var(--odd-pink);">
-                            <th colspan="5">DIGITE 4 ÍMPARES E 4 PARES</th>
+                            <th colspan="5">ESCOLHA 4 ÍMPARES E 4 PARES</th>
                         </tr>
                         <tr>
                             <td style="background: var(--odd-pink); font-weight: bold;">ÍMPARES</td>
@@ -198,30 +188,29 @@
         let jogosAtuais = [];
 
         window.onload = function() {
-            const auth = localStorage.getItem('milha_auth_v4');
-            let trials = parseInt(localStorage.getItem('trial_count_v4') || "3");
-            document.getElementById('trial-info').innerText = `Testes restantes: ${trials}`;
-            
+            const auth = localStorage.getItem('milha_auth_final');
+            let trials = parseInt(localStorage.getItem('trial_count_final') || "3");
+            document.getElementById('trial-info').innerText = `Acessos grátis restantes: ${trials}`;
             if (auth === 'full') liberarSite('full');
             else if (trials <= 0) {
                 document.getElementById('btn-teste').style.display = 'none';
-                document.getElementById('trial-info').innerText = "Testes esgotados!";
+                document.getElementById('trial-info').innerText = "Acessos esgotados!";
             }
             update();
         }
 
         function verificarSenha() {
             if (document.getElementById('pass-input').value === SENHA_MESTRE) {
-                localStorage.setItem('milha_auth_v4', 'full');
+                localStorage.setItem('milha_auth_final', 'full');
                 liberarSite('full');
             } else alert("Senha Incorreta!");
         }
 
         function acessoTeste() {
-            let trials = parseInt(localStorage.getItem('trial_count_v4') || "3");
+            let trials = parseInt(localStorage.getItem('trial_count_final') || "3");
             if (trials > 0) {
                 trials--;
-                localStorage.setItem('trial_count_v4', trials);
+                localStorage.setItem('trial_count_final', trials);
                 liberarSite('trial');
             }
         }
@@ -232,6 +221,7 @@
             document.getElementById('site-content').style.display = 'block';
             document.getElementById('btn-compartilhar').style.display = (type === 'full') ? 'flex' : 'none';
             document.getElementById('btn-comprar').style.display = (type === 'trial') ? 'flex' : 'none';
+            update(); // Força atualização para aplicar restrição de visualização
         }
 
         function update() {
@@ -254,15 +244,26 @@
             let winCount = 0;
 
             jogosAtuais.forEach((g, i) => {
-                const div = document.createElement('div');
-                div.className = 'game-row';
                 let isWin = false;
                 if(resVal.length === 4) {
                     let rS = resVal.split('').sort().join('');
                     let gS = g.join('').split('').sort().join('');
                     if(rS === gS) { isWin = true; winCount++; }
                 }
-                if(isWin) div.classList.add('winner');
+
+                // CONTROLO DE EXIBIÇÃO: ESCONDER APÓS O JOGO 18 SE FOR TESTE
+                if (userType === 'trial' && i >= 18) {
+                    if (i === 18) {
+                        const msg = document.createElement('div');
+                        msg.className = 'locked-msg';
+                        msg.innerText = "🔒 COMPRE A VERSÃO COMPLETA PARA VER OS OUTROS 18 JOGOS E COMPARTILHAR!";
+                        list.appendChild(msg);
+                    }
+                    return; // Para a execução do loop para este item
+                }
+
+                const div = document.createElement('div');
+                div.className = 'game-row' + (isWin ? ' winner' : '');
                 div.innerHTML = `<div class="game-id">J ${i+1}</div><div class="game-nums"><span>${g[0]}</span><span>${g[1]}</span><span>${g[2]}</span><span>${g[3]}</span></div>`;
                 list.appendChild(div);
             });
@@ -278,21 +279,17 @@
             document.getElementById('count-pre').innerText = winCount;
             document.getElementById('faturou-display').innerText = `R$ ${totalPre.toFixed(2)}`;
             document.getElementById('v-luc').style.color = lucro >= 0 ? 'green' : 'red';
-
-            if (winCount > 0 && resVal.length === 4) {
-                setTimeout(() => { alert(`⭐ ACERTO CONFIRMADO! ⭐\n${winCount} Milhar(es) Premiada(s)!\nTotal: R$ ${totalPre.toFixed(2)}`); }, 200);
-            }
         }
 
         function compartilhar() {
-            let txt = "🚀 *FECHAMENTO MILHAR*\n\n";
+            let txt = "🚀 *MEUS JOGOS - FECHAMENTO MILHAR*\n\n";
             jogosAtuais.forEach((g, i) => txt += `J${i+1}: [ ${g.join(' ')} ]\n`);
             if (navigator.share) navigator.share({ title: 'Jogos', text: txt });
             else { navigator.clipboard.writeText(txt); alert("Copiado!"); }
         }
 
         function limparTudo() {
-            if(confirm("Limpar dados?")) {
+            if(confirm("Deseja limpar todos os números?")) {
                 document.querySelectorAll('.in-odd, .in-even, #res-milhar').forEach(i => i.value = '');
                 update();
             }
