@@ -1,853 +1,357 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SISTEMA MILHAR - VERSÃO ESTÁVEL V9</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milhares Pares e Ímpares - Premium Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b0a7d;
+            --secondary: #6211cc;
+            --bg: #f4f7fe;
+            --white: #ffffff;
+            --text: #2d3748;
+            --odd-pink: #9b59b6;
+            --even-blue: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --gold: #f1c40f;
+        }
 
-<style>
-:root{
-    --bg-page:#dcd7bc;
-    --gold:#c5b358;
-    --odd-pink:#ff99ff;
-    --even-blue:#99ccff;
-    --result-cyan:#00ccff;
-    --dark-brown:#4a3728;
-    --green-share:#25d366;
-    --red-clear:#e74c3c;
-    --buy-blue:#0081ff;
-}
+        /* PROTEÇÃO E UI */
+        * { box-sizing: border-box; -webkit-user-select: none; user-select: none; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); margin: 0; color: var(--text); }
 
-*{
-    box-sizing:border-box;
-    -webkit-user-select:none;
-    user-select:none;
-}
+        /* HEADER */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.5rem; }
+        nav ul { display: flex; list-style: none; gap: 20px; margin: 0; padding: 0; }
+        nav ul li { cursor: pointer; font-size: 0.9rem; font-weight: 500; opacity: 0.8; transition: 0.3s; }
+        nav ul li:hover { opacity: 1; }
+        .btn-entrar { background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 8px; border: 1px solid white; cursor: pointer; }
 
-body{
-    font-family:'Segoe UI',Tahoma,sans-serif;
-    background-color:var(--bg-page);
-    margin:0;
-    padding:10px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
+        /* LAYOUT PRINCIPAL */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            padding: 30px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-@keyframes shine{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
+        @media (min-width: 1024px) {
+            .dashboard-container { grid-template-columns: 300px 1fr 320px; }
+        }
 
-.main-title{
-    background:linear-gradient(270deg,#c5b358,#ffffff,#c5b358,#8b7d3a);
-    background-size:400% 400%;
-    animation:shine 4s ease infinite;
-    width:100%;
-    max-width:1200px;
-    text-align:center;
-    padding:20px;
-    font-size:clamp(1.2rem,5vw,2.5rem);
-    font-weight:900;
-    border:4px solid #000;
-    margin-bottom:20px;
-    text-transform:uppercase;
-}
+        .card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .card-title { font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
 
-#login-overlay{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.98);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
+        /* SIDEBAR ESQUERDA: INPUTS */
+        .input-group { margin-bottom: 15px; }
+        .input-label { font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; display: block; text-transform: uppercase; }
+        .numbers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .num-in { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; font-weight: 700; font-size: 1.1rem; }
+        .odd-bg { border-left: 4px solid var(--odd-pink); }
+        .even-bg { border-left: 4px solid var(--even-blue); }
 
-.login-box{
-    background:var(--bg-page);
-    padding:30px;
-    border-radius:15px;
-    text-align:center;
-    width:95%;
-    max-width:400px;
-    border:3px solid var(--gold);
-}
+        .conferidor-btn { background: var(--secondary); color: white; width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        
+        /* BOTÕES SIMÉTRICOS */
+        .action-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .btn-action { height: 50px; border: none; border-radius: 12px; color: white; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.3s; }
+        .btn-share { background-color: var(--success); }
+        .btn-clear { background-color: var(--danger); }
+        .btn-buy { background-color: var(--even-blue); display: none; text-decoration: none; }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-#site-content{
-    display:none;
-    width:100%;
-    max-width:1200px;
-}
+        /* CENTRO: JOGOS */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .game-item { display: flex; border: 1px solid #edf2f7; border-radius: 8px; overflow: hidden; background: #fff; }
+        .game-idx { background: var(--gold); color: black; font-weight: 900; width: 45px; display: flex; align-items: center; justify-content: center; }
+        .game-values { display: flex; flex-grow: 1; justify-content: space-around; padding: 10px; font-weight: 700; }
+        .winner-game { border: 2px solid var(--success) !important; background: #e8f8f5; }
 
-.main-container{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:20px;
-}
+        .locked-msg {
+            grid-column: 1 / -1; background: #fff; border: 2px dashed #cbd5e0;
+            padding: 30px; text-align: center; border-radius: 15px; color: #718096; font-weight: 600;
+        }
 
-@media(min-width:992px){
-    .main-container{
-        grid-template-columns:320px 1fr 350px;
-    }
-}
+        /* SIDEBAR DIREITA: FINANCEIRO */
+        .finance-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .finance-label { font-size: 0.85rem; font-weight: 500; color: #718096; }
+        .finance-val { font-weight: 700; }
+        .faturou-card { background: linear-gradient(135deg, var(--danger), #ff5e57); color: white; text-align: center; padding: 25px; border-radius: 15px; margin-top: 20px; }
+        .faturou-val { font-size: 2rem; font-weight: 900; }
 
-.input-card{
-    background:white;
-    padding:15px;
-    border:1px solid #000;
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
+        /* FOOTER CARDS */
+        .footer-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px 5%;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 50px;
+        }
+        .info-card { display: flex; align-items: center; gap: 15px; background: white; padding: 20px; border-radius: 12px; }
+        .info-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+        /* LOGIN */
+        #login-overlay { position: fixed; inset: 0; background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
 
-th,td{
-    border:1px solid #000;
-    padding:8px;
-    text-align:center;
-}
-
-input{
-    width:100%;
-    border:none;
-    text-align:center;
-    font-size:1.2rem;
-    outline:none;
-    background:transparent;
-}
-
-.button-group{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    width:100%;
-}
-
-.btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:50px;
-    width:100%;
-    border:1px solid #000;
-    font-weight:bold;
-    cursor:pointer;
-    color:white;
-    text-transform:uppercase;
-    text-decoration:none;
-    font-size:0.9rem;
-    transition:transform 0.1s;
-}
-
-.btn:active{
-    transform:scale(0.98);
-}
-
-.btn-share{
-    background-color:var(--green-share);
-    color:#000;
-}
-
-.btn-buy{
-    background-color:var(--buy-blue);
-    display:none;
-}
-
-.btn-clear{
-    background-color:var(--red-clear);
-}
-
-.games-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
-    gap:8px;
-    background:#fff;
-    padding:15px;
-    border:1px solid #000;
-}
-
-.game-row{
-    display:flex;
-    border:1px solid #000;
-    height:35px;
-}
-
-.game-id{
-    background-color:yellow;
-    padding:5px;
-    font-weight:bold;
-    border-right:1px solid #000;
-    min-width:40px;
-    text-align:center;
-}
-
-.game-nums{
-    display:flex;
-    flex-grow:1;
-    justify-content:space-around;
-    align-items:center;
-    background:white;
-    font-weight:bold;
-}
-
-.winner{
-    background-color:#00ff00 !important;
-    box-shadow:0 0 10px #00ff00;
-}
-
-.winner .game-nums{
-    background-color:#00ff00 !important;
-}
-
-.locked-msg{
-    grid-column:1 / -1;
-    background:#f8f8f8;
-    border:2px dashed #888;
-    padding:20px;
-    text-align:center;
-    font-weight:bold;
-    color:#d35400;
-}
-
-.finance-panel{
-    background-color:var(--dark-brown);
-    color:white;
-    padding:15px;
-    border:2px solid #000;
-}
-
-.finance-table td:last-child{
-    background-color:var(--odd-pink);
-    color:black;
-    font-weight:bold;
-}
-
-.faturou-box{
-    background:red;
-    color:white;
-    text-align:center;
-    padding:25px;
-    font-size:2rem;
-    font-weight:bold;
-    border:2px solid #000;
-    margin:10px 0;
-}
-
-/* POPUP */
-
-#popup-win{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.88);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:999999;
-    padding:20px;
-}
-
-.popup-box{
-    background:#00ff00;
-    border:5px solid #fff;
-    border-radius:20px;
-    width:100%;
-    max-width:450px;
-    padding:30px 20px;
-    text-align:center;
-    box-shadow:0 0 30px #00ff00;
-    animation:popupShow .3s ease;
-}
-
-.popup-box h1{
-    margin:0;
-    font-size:2rem;
-    color:#000;
-}
-
-.popup-box p{
-    font-size:1.3rem;
-    font-weight:bold;
-    color:#000;
-}
-
-.popup-box button{
-    background:#000;
-    color:#fff;
-    border:none;
-    padding:12px 25px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-@keyframes popupShow{
-    from{
-        transform:scale(.7);
-        opacity:0;
-    }
-
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}
-</style>
+        footer { background: var(--primary); color: white; padding: 40px 5%; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; font-size: 0.8rem; }
+    </style>
 </head>
-
 <body oncontextmenu="return false;">
 
-<div id="login-overlay">
-    <div class="login-box">
-
-        <h2 style="margin-bottom:20px;">
-            CONTROLO DE ACESSO
-        </h2>
-
-        <input
-            type="password"
-            id="pass-input"
-            placeholder="DIGITE A SENHA"
-            style="border:1px solid #000;margin-bottom:15px;padding:12px;width:100%;background:#fff;"
-        >
-
-        <button
-            class="btn"
-            style="background:var(--gold);color:#000;"
-            onclick="verificarSenha()"
-        >
-            ENTRAR NO SISTEMA
-        </button>
-
-        <hr style="margin:20px 0;border:0.5px solid #aaa;">
-
-        <p id="trial-info">
-            Acessos de Teste: 3
-        </p>
-
-        <button
-            class="btn"
-            style="background:#555;"
-            id="btn-teste"
-            onclick="acessoTeste()"
-        >
-            MODO TESTE (18 JOGOS)
-        </button>
-
-    </div>
-</div>
-
-<div id="site-content">
-
-    <div class="main-title">
-        MILHARES PARES E ÍMPARES
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="color: var(--primary)">SISTEMA MILHAR</h2>
+            <p style="color: #718096">Insira sua senha para acessar o painel completo</p>
+            <input type="password" id="pass-input" placeholder="SENHA" style="width: 100%; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; margin: 20px 0; font-size: 1rem; text-align: center;">
+            <button class="conferidor-btn" onclick="verificarSenha()">ENTRAR NO PAINEL</button>
+            <p id="trial-info" style="margin-top: 15px; font-size: 0.85rem;">Testes gratuitos: 3</p>
+            <button style="background: #e2e8f0; color: var(--text); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="acessoTeste()">ENTRAR COMO TESTE</button>
+        </div>
     </div>
 
-    <div class="main-container">
+    <div id="site-content">
+        <header>
+            <div class="logo-area"><i class="fas fa-dice"></i> MILHARES <small style="font-weight: 300; font-size: 0.7rem;">PARES E ÍMPARES</small></div>
+            <nav>
+                <ul>
+                    <li>INÍCIO</li><li>COMO JOGAR</li><li>ESTATÍSTICAS</li><li>SOBRE</li><li class="btn-entrar"><i class="fas fa-user"></i></li>
+                </ul>
+            </nav>
+        </header>
 
-        <div class="left-col">
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-title" style="color: var(--secondary)"><i class="fas fa-edit"></i> ESCOLHA SEUS NÚMEROS</div>
+                    <div class="input-group">
+                        <span class="input-label">4 ÍMPARES</span>
+                        <div class="numbers-grid odd-bg">
+                            <input type="number" class="in-odd num-in" value="1" oninput="update()">
+                            <input type="number" class="in-odd num-in" value="3" oninput="update()">
+                            <input type="number" class="in-odd num-in" value="5" oninput="update()">
+                            <input type="number" class="in-odd num-in" value="7" oninput="update()">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-label">4 PARES</span>
+                        <div class="numbers-grid even-bg">
+                            <input type="number" class="in-even num-in" value="2" oninput="update()">
+                            <input type="number" class="in-even num-in" value="4" oninput="update()">
+                            <input type="number" class="in-even num-in" value="6" oninput="update()">
+                            <input type="number" class="in-even num-in" value="8" oninput="update()">
+                        </div>
+                    </div>
+                    
+                    <div class="card-title" style="color: var(--secondary); margin-top: 25px;"><i class="fas fa-chart-line"></i> CONFERIDOR</div>
+                    <input type="text" id="res-milhar" placeholder="Resultado..." maxlength="4" class="num-in" style="background: #f8fafc;" oninput="update()">
+                    
+                    <div class="action-buttons">
+                        <button id="btn-compartilhar" class="btn-action btn-share" onclick="compartilhar()"><i class="fab fa-whatsapp"></i> COMPARTILHAR JOGOS</button>
+                        <a id="btn-comprar" href="https://mpago.la/1gnnpkZ" target="_blank" class="btn-action btn-buy">💰 COMPRAR COMPLETO</a>
+                        <button class="btn-action btn-clear" onclick="limparTudo()"><i class="fas fa-trash"></i> LIMPAR TUDO</button>
+                    </div>
+                </div>
+            </div>
 
-            <div class="input-card">
+            <div class="main-games">
+                <div class="games-grid" id="games-list"></div>
+            </div>
 
-                <table>
-
-                    <tr style="background:var(--odd-pink);">
-                        <th colspan="5">
-                            ESCOLHA 4 ÍMPARES E 4 PARES
-                        </th>
-                    </tr>
-
-                    <tr>
-
-                        <td style="background:var(--odd-pink);font-weight:bold;">
-                            ÍMPARES
-                        </td>
-
-                        <td><input type="number" class="in-odd" value="1" oninput="update()"></td>
-                        <td><input type="number" class="in-odd" value="3" oninput="update()"></td>
-                        <td><input type="number" class="in-odd" value="5" oninput="update()"></td>
-                        <td><input type="number" class="in-odd" value="7" oninput="update()"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td style="background:var(--even-blue);font-weight:bold;">
-                            PARES
-                        </td>
-
-                        <td><input type="number" class="in-even" value="2" oninput="update()"></td>
-                        <td><input type="number" class="in-even" value="4" oninput="update()"></td>
-                        <td><input type="number" class="in-even" value="6" oninput="update()"></td>
-                        <td><input type="number" class="in-even" value="8" oninput="update()"></td>
-
-                    </tr>
-
-                </table>
-
-                <div style="background:var(--result-cyan);padding:10px;border:1px solid #000;">
-
-                    <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
-                        CONFERIDOR
+            <div class="summary">
+                <div class="card">
+                    <div class="card-title" style="color: var(--primary)"><i class="fas fa-calculator"></i> RESUMO DA COTAÇÃO</div>
+                    <div class="finance-row">
+                        <span class="finance-label">COTAÇÃO</span>
+                        <span class="finance-val">R$ <input type="number" id="cot" value="8500" style="width: 60px; border: none; font-weight: 700; text-align: right;" oninput="update()"></span>
+                    </div>
+                    <div class="finance-row">
+                        <span class="finance-label">VALOR APOSTADO</span>
+                        <span class="finance-val" id="v-ap" style="color: var(--danger)">R$ 36.00</span>
+                    </div>
+                    <div class="finance-row">
+                        <span class="finance-label">VALOR POR JOGO</span>
+                        <span class="finance-val">R$ <input type="number" id="v-jogo" value="1" style="width: 50px; border: none; font-weight: 700; text-align: right;" oninput="update()"></span>
+                    </div>
+                    <div class="finance-row">
+                        <span class="finance-label">PRÊMIO (INVERTIDA)</span>
+                        <span class="finance-val" id="v-pre">R$ 0.00</span>
+                    </div>
+                    <div class="finance-row">
+                        <span class="finance-label">LUCRO TOTAL</span>
+                        <span class="finance-val" id="v-luc" style="color: var(--danger)">R$ -36.00</span>
+                    </div>
+                    <div class="finance-row">
+                        <span class="finance-label">ACERTOS</span>
+                        <span class="finance-val" id="count-pre">0</span>
                     </div>
 
-                    <input
-                        type="text"
-                        id="res-milhar"
-                        placeholder="Resultado..."
-                        maxlength="4"
-                        oninput="update()"
-                    >
-
+                    <div class="faturou-card">
+                        <div style="font-size: 0.8rem; font-weight: 500; opacity: 0.9;">VOCÊ FATUROU</div>
+                        <div class="faturou-val" id="faturou-display">R$ 0.00</div>
+                    </div>
                 </div>
-
-                <div class="button-group">
-
-                    <button
-                        id="btn-compartilhar"
-                        class="btn btn-share"
-                        onclick="compartilhar()"
-                    >
-                        📲 Compartilhar Jogos
-                    </button>
-
-                    <a
-                        id="btn-comprar"
-                        href="https://mpago.la/1gnnpkZ"
-                        target="_blank"
-                        class="btn btn-buy"
-                    >
-                        💰 COMPRAR COMPLETO
-                    </a>
-
-                    <button
-                        class="btn btn-clear"
-                        onclick="limparTudo()"
-                    >
-                        🗑️ Limpar Tudo
-                    </button>
-
-                </div>
-
             </div>
-
         </div>
 
-        <div class="games-grid" id="games-list"></div>
-
-        <div class="right-col">
-
-            <div class="finance-panel">
-
-                <table class="finance-table">
-
-                    <tr>
-                        <td>COTAÇÃO</td>
-                        <td>R$ <input type="number" id="cot" value="8000" oninput="update()"></td>
-                    </tr>
-
-                    <tr>
-                        <td>VALOR APOSTADO</td>
-                        <td id="v-ap" style="color:red;">R$ 36.00</td>
-                    </tr>
-
-                    <tr>
-                        <td>VALOR POR JOGO</td>
-                        <td>R$ <input type="number" id="v-jogo" value="1" oninput="update()"></td>
-                    </tr>
-
-                    <tr>
-                        <td>PRÊMIO (INVERTIDA)</td>
-                        <td id="v-pre">R$ 0.00</td>
-                    </tr>
-
-                    <tr>
-                        <td>LUCRO TOTAL</td>
-                        <td id="v-luc">R$ -36.00</td>
-                    </tr>
-
-                    <tr>
-                        <td>ACERTOS</td>
-                        <td id="count-pre">0</td>
-                    </tr>
-
-                </table>
-
+        <div class="footer-cards">
+            <div class="info-card">
+                <div class="info-icon" style="background: var(--secondary)"><i class="fas fa-shield-alt"></i></div>
+                <div><strong>100% SEGURO</strong><br><small>Dados e jogos protegidos.</small></div>
             </div>
-
-            <div style="text-align:center;font-weight:bold;margin-top:10px;">
-                VOCÊ FATUROU
+            <div class="info-card">
+                <div class="info-icon" style="background: var(--even-blue)"><i class="fas fa-bolt"></i></div>
+                <div><strong>RÁPIDO E FÁCIL</strong><br><small>Confira em segundos.</small></div>
             </div>
-
-            <div class="faturou-box" id="faturou-display">
-                R$ 0.00
+            <div class="info-card">
+                <div class="info-icon" style="background: var(--success)"><i class="fas fa-chart-bar"></i></div>
+                <div><strong>ESTATÍSTICAS</strong><br><small>Aumente suas chances.</small></div>
             </div>
-
         </div>
 
+        <footer>
+            <div>
+                <strong>MILHARES PARES E ÍMPARES</strong><br>Mais estratégia, mais chances de ganhar.
+            </div>
+            <div style="display: flex; gap: 20px;">
+                <span>Termos de Uso</span><span>Política de Privacidade</span><span>Responsável</span>
+            </div>
+            <div>© 2026 Milhares Pares e Ímpares. Todos os direitos reservados.</div>
+        </footer>
     </div>
 
-</div>
-
-<!-- POPUP -->
-
-<div id="popup-win">
-
-    <div class="popup-box">
-
-        <h1>
-            🎉 PARABÉNS 🎉
-        </h1>
-
-        <p>
-            VOCÊ ACERTOU<br>
-            1 MILHAR INVERTIDA!
-        </p>
-
-        <button onclick="fecharPopup()">
-            FECHAR
-        </button>
-
-    </div>
-
-</div>
-
-<!-- AUDIO -->
-
-<audio id="win-audio" preload="auto">
-    <source src="https://www.soundjay.com/human/yes-1.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-
-document.onkeydown=function(e){
-
-    if(
-        e.keyCode==123 ||
-        (
-            e.ctrlKey &&
-            (
-                e.keyCode=='U'.charCodeAt(0) ||
-                e.keyCode=='S'.charCodeAt(0)
-            )
-        )
-    ){
-        return false;
-    }
-
-    if(
-        e.ctrlKey &&
-        e.shiftKey &&
-        (
-            e.keyCode=='I'.charCodeAt(0) ||
-            e.keyCode=='J'.charCodeAt(0)
-        )
-    ){
-        return false;
-    }
-};
-
-const SENHA_MESTRE="MILHAPARESEIMPARES10";
-
-let userType="none";
-let jogosAtuais=[];
-let popupJaMostrado=false;
-
-window.onload=function(){
-
-    const auth=localStorage.getItem('milha_auth_v9');
-
-    let trials=parseInt(
-        localStorage.getItem('trial_count_v9') || "3"
-    );
-
-    document.getElementById('trial-info').innerText=
-        `Acessos de Teste: ${trials}`;
-
-    if(auth==='full'){
-
-        liberarSite('full');
-
-    }else if(trials<=0){
-
-        document.getElementById('btn-teste').style.display='none';
-
-        document.getElementById('trial-info').innerText=
-            "Acessos de teste esgotados!";
-    }
-
-    update();
-};
-
-function verificarSenha(){
-
-    const digitada=
-        document.getElementById('pass-input').value.trim();
-
-    if(digitada===SENHA_MESTRE){
-
-        localStorage.setItem('milha_auth_v9','full');
-
-        liberarSite('full');
-
-    }else{
-
-        alert("Senha Incorreta!");
-    }
-}
-
-function acessoTeste(){
-
-    let trials=parseInt(
-        localStorage.getItem('trial_count_v9') || "3"
-    );
-
-    if(trials>0){
-
-        trials--;
-
-        localStorage.setItem('trial_count_v9',trials);
-
-        liberarSite('trial');
-
-    }else{
-
-        alert("Créditos de teste esgotados!");
-    }
-}
-
-function liberarSite(type){
-
-    userType=type;
-
-    document.getElementById('login-overlay').style.display='none';
-
-    document.getElementById('site-content').style.display='block';
-
-    document.getElementById('btn-compartilhar').style.display=
-        (type==='full') ? 'flex' : 'none';
-
-    document.getElementById('btn-comprar').style.display=
-        (type==='trial') ? 'flex' : 'none';
-
-    update();
-}
-
-function tocarSomWin(){
-
-    const audio=document.getElementById('win-audio');
-
-    audio.currentTime=0;
-
-    audio.play().catch(()=>{});
-}
-
-function mostrarPopup(){
-
-    if(popupJaMostrado) return;
-
-    popupJaMostrado=true;
-
-    document.getElementById('popup-win').style.display='flex';
-
-    tocarSomWin();
-}
-
-function fecharPopup(){
-
-    document.getElementById('popup-win').style.display='none';
-}
-
-function update(){
-
-    popupJaMostrado=false;
-
-    const odds=Array.from(
-        document.querySelectorAll('.in-odd')
-    ).map(i=>i.value);
-
-    const evens=Array.from(
-        document.querySelectorAll('.in-even')
-    ).map(i=>i.value);
-
-    const resVal=
-        document.getElementById('res-milhar').value;
-
-    const vJogo=
-        parseFloat(document.getElementById('v-jogo').value) || 0;
-
-    const cot=
-        parseFloat(document.getElementById('cot').value) || 0;
-
-    const comboO=[];
-
-    for(let i=0;i<4;i++){
-
-        for(let j=i+1;j<4;j++){
-
-            comboO.push([odds[i],odds[j]]);
+    <script>
+        // SEGURANÇA
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && (e.keyCode == 'U'.charCodeAt(0) || e.keyCode == 'S'.charCodeAt(0)))) return false;
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
+        };
+
+        const SENHA_MESTRE = "MILHAPARESEIMPARES10";
+        let userType = "none";
+        let jogosAtuais = [];
+
+        window.onload = function() {
+            const auth = localStorage.getItem('milha_auth_v10');
+            let trials = parseInt(localStorage.getItem('trial_count_v10') || "3");
+            document.getElementById('trial-info').innerText = `Acessos gratuitos: ${trials}`;
+            if (auth === 'full') liberarSite('full');
+            else if (trials <= 0) { document.getElementById('btn-teste').style.display = 'none'; }
+            update();
         }
-    }
 
-    const comboE=[];
-
-    for(let i=0;i<4;i++){
-
-        for(let j=i+1;j<4;j++){
-
-            comboE.push([evens[i],evens[j]]);
+        function verificarSenha() {
+            if (document.getElementById('pass-input').value.trim() === SENHA_MESTRE) {
+                localStorage.setItem('milha_auth_v10', 'full');
+                liberarSite('full');
+            } else alert("Senha Incorreta!");
         }
-    }
 
-    jogosAtuais=[];
-
-    comboO.forEach(o=>{
-
-        comboE.forEach(e=>{
-
-            jogosAtuais.push([...o,...e].sort());
-        });
-    });
-
-    const list=
-        document.getElementById('games-list');
-
-    list.innerHTML='';
-
-    let winCount=0;
-
-    jogosAtuais.forEach((g,i)=>{
-
-        let isWin=false;
-
-        if(resVal.length===4){
-
-            let rS=
-                resVal.split('').sort().join('');
-
-            let gS=
-                g.join('').split('').sort().join('');
-
-            if(rS===gS){
-
-                isWin=true;
-
-                winCount++;
-
-                mostrarPopup();
+        function acessoTeste() {
+            let trials = parseInt(localStorage.getItem('trial_count_v10') || "3");
+            if (trials > 0) {
+                trials--;
+                localStorage.setItem('trial_count_v10', trials);
+                liberarSite('trial');
             }
         }
 
-        if(userType==='trial' && i>=18){
-
-            if(i===18){
-
-                const msg=
-                    document.createElement('div');
-
-                msg.className='locked-msg';
-
-                msg.innerText=
-                    "🔒 COMPRE A VERSÃO COMPLETA PARA VER O RESTO!";
-
-                list.appendChild(msg);
-            }
-
-            return;
+        function liberarSite(type) {
+            userType = type;
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('site-content').style.display = 'block';
+            document.getElementById('btn-compartilhar').style.display = (type === 'full') ? 'flex' : 'none';
+            document.getElementById('btn-comprar').style.display = (type === 'trial') ? 'flex' : 'none';
+            update();
         }
 
-        const div=
-            document.createElement('div');
+        function update() {
+            const odds = Array.from(document.querySelectorAll('.in-odd')).map(i => i.value);
+            const evens = Array.from(document.querySelectorAll('.in-even')).map(i => i.value);
+            const resVal = document.getElementById('res-milhar').value;
+            const vJogo = parseFloat(document.getElementById('v-jogo').value) || 0;
+            const cot = parseFloat(document.getElementById('cot').value) || 0;
 
-        div.className=
-            'game-row'+(isWin ? ' winner' : '');
+            const comboO = [];
+            for(let i=0; i<4; i++) for(let j=i+1; j<4; j++) comboO.push([odds[i], odds[j]]);
+            const comboE = [];
+            for(let i=0; i<4; i++) for(let j=i+1; j<4; j++) comboE.push([evens[i], evens[j]]);
+            
+            jogosAtuais = [];
+            comboO.forEach(o => comboE.forEach(e => jogosAtuais.push([...o, ...e].sort())));
 
-        div.innerHTML=
-            `<div class="game-id">J ${i+1}</div>
-            <div class="game-nums">
-                <span>${g[0]}</span>
-                <span>${g[1]}</span>
-                <span>${g[2]}</span>
-                <span>${g[3]}</span>
-            </div>`;
+            const list = document.getElementById('games-list');
+            list.innerHTML = '';
+            let winCount = 0;
 
-        list.appendChild(div);
-    });
+            jogosAtuais.forEach((g, i) => {
+                let isWin = false;
+                if(resVal.length === 4) {
+                    let rS = resVal.split('').sort().join('');
+                    let gS = g.join('').split('').sort().join('');
+                    if(rS === gS) { isWin = true; winCount++; }
+                }
 
-    const premioAcerto=
-        (cot*vJogo)/24;
+                if (userType === 'trial' && i >= 18) {
+                    if (i === 18) {
+                        const msg = document.createElement('div');
+                        msg.className = 'locked-msg';
+                        msg.innerHTML = "🔒 VERSÃO LIMITADA<br><small>Compre o acesso para liberar todos os 36 jogos.</small>";
+                        list.appendChild(msg);
+                    }
+                    return;
+                }
 
-    const totalPre=
-        winCount*premioAcerto;
+                const div = document.createElement('div');
+                div.className = 'game-item' + (isWin ? ' winner-game' : '');
+                div.innerHTML = `<div class="game-idx">J${i+1}</div><div class="game-values"><span>${g[0]}</span><span>${g[1]}</span><span>${g[2]}</span><span>${g[3]}</span></div>`;
+                list.appendChild(div);
+            });
 
-    const totalAp=
-        36*vJogo;
+            const premioAcerto = (cot * vJogo) / 24;
+            const totalPre = winCount * premioAcerto;
+            const totalAp = 36 * vJogo;
+            const lucro = totalPre - totalAp;
 
-    const lucro=
-        totalPre-totalAp;
+            document.getElementById('v-ap').innerText = `R$ ${totalAp.toFixed(2)}`;
+            document.getElementById('v-pre').innerText = `R$ ${totalPre.toFixed(2)}`;
+            document.getElementById('v-luc').innerText = `R$ ${lucro.toFixed(2)}`;
+            document.getElementById('count-pre').innerText = winCount;
+            document.getElementById('faturou-display').innerText = `R$ ${totalPre.toFixed(2)}`;
+            document.getElementById('v-luc').style.color = lucro >= 0 ? 'var(--success)' : 'var(--danger)';
+        }
 
-    document.getElementById('v-ap').innerText=
-        `R$ ${totalAp.toFixed(2)}`;
+        function compartilhar() {
+            let txt = jogosAtuais.map(g => g.join('')).join(' ');
+            if (navigator.share) navigator.share({ title: 'Meus Jogos', text: txt });
+            else { navigator.clipboard.writeText(txt); alert("Copiado!"); }
+        }
 
-    document.getElementById('v-pre').innerText=
-        `R$ ${totalPre.toFixed(2)}`;
-
-    document.getElementById('v-luc').innerText=
-        `R$ ${lucro.toFixed(2)}`;
-
-    document.getElementById('count-pre').innerText=
-        winCount;
-
-    document.getElementById('faturou-display').innerText=
-        `R$ ${totalPre.toFixed(2)}`;
-
-    document.getElementById('v-luc').style.color=
-        lucro>=0 ? 'green' : 'red';
-}
-
-function compartilhar(){
-
-    if(jogosAtuais.length===0) return;
-
-    let txt=
-        jogosAtuais.map(g=>g.join('')).join(' ');
-
-    if(navigator.share){
-
-        navigator.share({
-            title:'Jogos',
-            text:txt
-        });
-
-    }else{
-
-        navigator.clipboard.writeText(txt);
-
-        alert("Milhares copiadas!");
-    }
-}
-
-function limparTudo(){
-
-    if(confirm("Deseja limpar todos os números?")){
-
-        document
-            .querySelectorAll('.in-odd,.in-even,#res-milhar')
-            .forEach(i=>i.value='');
-
-        update();
-    }
-}
-
-</script>
-
+        function limparTudo() {
+            if(confirm("Limpar dados?")) {
+                document.querySelectorAll('.in-odd, .in-even, #res-milhar').forEach(i => i.value = '');
+                update();
+            }
+        }
+    </script>
 </body>
 </html>
