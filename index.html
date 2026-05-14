@@ -1,299 +1,730 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milhares Pares e Ímpares - Versão Estratégica</title>
-    <style>
-        :root {
-            --bg-page: #dcd7bc;
-            --gold: #c5b358;
-            --odd-pink: #ff99ff;
-            --even-blue: #99ccff;
-            --result-cyan: #00ccff;
-            --dark-brown: #4a3728;
-            --green-share: #25d366;
-            --red-clear: #e74c3c;
-            --buy-blue: #0081ff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SISTEMA MILHAR - ESTÁVEL V8</title>
 
-        /* PROTEÇÃO: IMPEDIR SELEÇÃO */
-        * { box-sizing: border-box; -webkit-user-select: none; user-select: none; }
+<style>
+:root{
+    --bg-page:#dcd7bc;
+    --gold:#c5b358;
+    --odd-pink:#ff99ff;
+    --even-blue:#99ccff;
+    --result-cyan:#00ccff;
+    --dark-brown:#4a3728;
+    --green-share:#25d366;
+    --red-clear:#e74c3c;
+    --buy-blue:#0081ff;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg-page);
-            margin: 0; padding: 10px;
-            display: flex; flex-direction: column; align-items: center;
-        }
+*{
+    box-sizing:border-box;
+    -webkit-user-select:none;
+    user-select:none;
+}
 
-        @keyframes shine {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+body{
+    font-family:'Segoe UI',Tahoma,sans-serif;
+    background-color:var(--bg-page);
+    margin:0;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
 
-        .main-title {
-            background: linear-gradient(270deg, #c5b358, #ffffff, #c5b358, #8b7d3a);
-            background-size: 400% 400%;
-            animation: shine 4s ease infinite;
-            width: 100%; max-width: 1200px;
-            text-align: center; padding: 20px;
-            font-size: clamp(1.2rem, 5vw, 2.5rem);
-            font-weight: 900; border: 4px solid #000;
-            margin-bottom: 20px; text-transform: uppercase;
-        }
+@keyframes shine{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
 
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: flex; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .login-box {
-            background: var(--bg-page); padding: 30px; border-radius: 15px;
-            text-align: center; width: 90%; max-width: 400px; border: 3px solid var(--gold);
-        }
+.main-title{
+    background:linear-gradient(270deg,#c5b358,#ffffff,#c5b358,#8b7d3a);
+    background-size:400% 400%;
+    animation:shine 4s ease infinite;
+    width:100%;
+    max-width:1200px;
+    text-align:center;
+    padding:20px;
+    font-size:clamp(1.2rem,5vw,2.5rem);
+    font-weight:900;
+    border:4px solid #000;
+    margin-bottom:20px;
+    text-transform:uppercase;
+}
 
-        #site-content { display: none; width: 100%; max-width: 1200px; }
+#login-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.95);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
 
-        .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 992px) { .main-container { grid-template-columns: 320px 1fr 350px; } }
+.login-box{
+    background:var(--bg-page);
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+    width:90%;
+    max-width:400px;
+    border:3px solid var(--gold);
+}
 
-        .input-card {
-            background: white; padding: 15px; border: 1px solid #000;
-            display: flex; flex-direction: column; gap: 15px;
-        }
+#site-content{
+    display:none;
+    width:100%;
+    max-width:1200px;
+}
 
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #000; padding: 8px; text-align: center; }
-        input { width: 100%; border: none; text-align: center; font-size: 1.2rem; outline: none; background: transparent; }
+.main-container{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:20px;
+}
 
-        .button-group { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+@media(min-width:992px){
+    .main-container{
+        grid-template-columns:320px 1fr 350px;
+    }
+}
 
-        .btn {
-            display: flex; align-items: center; justify-content: center;
-            height: 50px; width: 100%; border: 1px solid #000; font-weight: bold;
-            cursor: pointer; color: white; text-transform: uppercase;
-            text-decoration: none; font-size: 0.9rem; transition: transform 0.1s;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn-share { background-color: var(--green-share); color: #000; }
-        .btn-buy { background-color: var(--buy-blue); display: none; }
-        .btn-clear { background-color: var(--red-clear); }
+.input-card{
+    background:white;
+    padding:15px;
+    border:1px solid #000;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
 
-        .games-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 8px; background: #fff; padding: 15px; border: 1px solid #000;
-        }
-        .game-row { display: flex; border: 1px solid #000; height: 35px; }
-        .game-id { background-color: yellow; padding: 5px; font-weight: bold; border-right: 1px solid #000; min-width: 40px; text-align: center; }
-        .game-nums { display: flex; flex-grow: 1; justify-content: space-around; align-items: center; background: white; font-weight: bold; }
+table{
+    width:100%;
+    border-collapse:collapse;
+}
 
-        .winner { background-color: #00ff00 !important; box-shadow: 0 0 10px #00ff00; }
-        .winner .game-nums { background-color: #00ff00 !important; }
+th,td{
+    border:1px solid #000;
+    padding:8px;
+    text-align:center;
+}
 
-        /* MENSAGEM DE BLOQUEIO ESTRATÉGICO */
-        .locked-msg {
-            grid-column: 1 / -1; background: #f8f8f8; border: 2px dashed #888;
-            padding: 20px; text-align: center; font-weight: bold; color: #d35400;
-        }
+input{
+    width:100%;
+    border:none;
+    text-align:center;
+    font-size:1.2rem;
+    outline:none;
+    background:transparent;
+}
 
-        .finance-panel { background-color: var(--dark-brown); color: white; padding: 15px; border: 2px solid #000; }
-        .finance-table td:last-child { background-color: var(--odd-pink); color: black; font-weight: bold; }
-        .faturou-box { background: red; color: white; text-align: center; padding: 25px; font-size: 2rem; font-weight: bold; border: 2px solid #000; margin: 10px 0; }
-    </style>
+.button-group{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+}
+
+.btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:50px;
+    width:100%;
+    border:1px solid #000;
+    font-weight:bold;
+    cursor:pointer;
+    color:white;
+    text-transform:uppercase;
+    text-decoration:none;
+    font-size:0.9rem;
+    transition:transform 0.1s;
+}
+
+.btn:active{
+    transform:scale(0.98);
+}
+
+.btn-share{
+    background-color:var(--green-share);
+    color:#000;
+}
+
+.btn-buy{
+    background-color:var(--buy-blue);
+    display:none;
+}
+
+.btn-clear{
+    background-color:var(--red-clear);
+}
+
+.games-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    gap:8px;
+    background:#fff;
+    padding:15px;
+    border:1px solid #000;
+}
+
+.game-row{
+    display:flex;
+    border:1px solid #000;
+    height:35px;
+}
+
+.game-id{
+    background-color:yellow;
+    padding:5px;
+    font-weight:bold;
+    border-right:1px solid #000;
+    min-width:40px;
+    text-align:center;
+}
+
+.game-nums{
+    display:flex;
+    flex-grow:1;
+    justify-content:space-around;
+    align-items:center;
+    background:white;
+    font-weight:bold;
+}
+
+.winner{
+    background-color:#00ff00 !important;
+    box-shadow:0 0 10px #00ff00;
+}
+
+.winner .game-nums{
+    background-color:#00ff00 !important;
+}
+
+.locked-msg{
+    grid-column:1 / -1;
+    background:#f8f8f8;
+    border:2px dashed #888;
+    padding:20px;
+    text-align:center;
+    font-weight:bold;
+    color:#d35400;
+}
+
+.finance-panel{
+    background-color:var(--dark-brown);
+    color:white;
+    padding:15px;
+    border:2px solid #000;
+}
+
+.finance-table td:last-child{
+    background-color:var(--odd-pink);
+    color:black;
+    font-weight:bold;
+}
+
+.faturou-box{
+    background:red;
+    color:white;
+    text-align:center;
+    padding:25px;
+    font-size:2rem;
+    font-weight:bold;
+    border:2px solid #000;
+    margin:10px 0;
+}
+</style>
 </head>
+
 <body oncontextmenu="return false;">
 
-    <!-- LOGIN -->
-    <div id="login-overlay">
-        <div class="login-box">
-            <h2>ACESSO AO SISTEMA</h2>
-            <input type="password" id="pass-input" placeholder="SENHA" style="border: 1px solid #000; margin: 15px 0; padding: 10px; background: #fff;"><br>
-            <button class="btn" style="background: var(--gold); color: #000;" onclick="verificarSenha()">ENTRAR NO SISTEMA</button>
-            <hr style="margin: 20px 0; border: 0.5px solid #aaa;">
-            <p id="trial-info">Acessos grátis restantes: 3</p>
-            <button class="btn" style="background: #555;" id="btn-teste" onclick="acessoTeste()">ENTRAR COMO TESTE (LIMITADO)</button>
-        </div>
+<div id="login-overlay">
+    <div class="login-box">
+        <h2 style="margin-bottom:20px;">SISTEMA MILHAR</h2>
+
+        <input
+            type="password"
+            id="pass-input"
+            placeholder="DIGITE A SENHA"
+            style="border:1px solid #000;margin-bottom:15px;padding:12px;width:100%;background:#fff;"
+        >
+
+        <br>
+
+        <button
+            class="btn"
+            style="background:var(--gold);color:#000;"
+            onclick="verificarSenha()"
+        >
+            DESBLOQUEAR ACESSO
+        </button>
+
+        <hr style="margin:20px 0;border:0.5px solid #aaa;">
+
+        <p id="trial-info">Acessos grátis: 3</p>
+
+        <button
+            class="btn"
+            style="background:#555;"
+            id="btn-teste"
+            onclick="acessoTeste()"
+        >
+            MODO TESTE (18 JOGOS)
+        </button>
+    </div>
+</div>
+
+<div id="site-content">
+
+    <div class="main-title">
+        MILHARES PARES E ÍMPARES
     </div>
 
-    <!-- SITE -->
-    <div id="site-content">
-        <div class="main-title">MILHA PARES E ÍMPARES</div>
+    <div class="main-container">
 
-        <div class="main-container">
-            <div class="left-col">
-                <div class="input-card">
-                    <table>
-                        <tr style="background: var(--odd-pink);">
-                            <th colspan="5">ESCOLHA 4 ÍMPARES E 4 PARES</th>
-                        </tr>
-                        <tr>
-                            <td style="background: var(--odd-pink); font-weight: bold;">ÍMPARES</td>
-                            <td><input type="number" class="in-odd" value="1" oninput="update()"></td>
-                            <td><input type="number" class="in-odd" value="3" oninput="update()"></td>
-                            <td><input type="number" class="in-odd" value="5" oninput="update()"></td>
-                            <td><input type="number" class="in-odd" value="7" oninput="update()"></td>
-                        </tr>
-                        <tr>
-                            <td style="background: var(--even-blue); font-weight: bold;">PARES</td>
-                            <td><input type="number" class="in-even" value="2" oninput="update()"></td>
-                            <td><input type="number" class="in-even" value="4" oninput="update()"></td>
-                            <td><input type="number" class="in-even" value="6" oninput="update()"></td>
-                            <td><input type="number" class="in-even" value="8" oninput="update()"></td>
-                        </tr>
-                    </table>
+        <div class="left-col">
 
-                    <div style="background: var(--result-cyan); padding: 10px; border: 1px solid #000;">
-                        <div style="text-align: center; font-weight: bold; margin-bottom: 5px;">CONFERIDOR (INVERTIDA)</div>
-                        <input type="text" id="res-milhar" placeholder="Resultado..." maxlength="4" oninput="update()">
+            <div class="input-card">
+
+                <table>
+
+                    <tr style="background:var(--odd-pink);">
+                        <th colspan="5">
+                            DIGITE 4 ÍMPARES E 4 PARES
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <td style="background:var(--odd-pink);font-weight:bold;">
+                            ÍMPARES
+                        </td>
+
+                        <td><input type="number" class="in-odd" value="1" oninput="update()"></td>
+                        <td><input type="number" class="in-odd" value="3" oninput="update()"></td>
+                        <td><input type="number" class="in-odd" value="5" oninput="update()"></td>
+                        <td><input type="number" class="in-odd" value="7" oninput="update()"></td>
+                    </tr>
+
+                    <tr>
+                        <td style="background:var(--even-blue);font-weight:bold;">
+                            PARES
+                        </td>
+
+                        <td><input type="number" class="in-even" value="2" oninput="update()"></td>
+                        <td><input type="number" class="in-even" value="4" oninput="update()"></td>
+                        <td><input type="number" class="in-even" value="6" oninput="update()"></td>
+                        <td><input type="number" class="in-even" value="8" oninput="update()"></td>
+                    </tr>
+
+                </table>
+
+                <div style="background:var(--result-cyan);padding:10px;border:1px solid #000;">
+
+                    <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
+                        CONFERIDOR
                     </div>
 
-                    <div class="button-group">
-                        <button id="btn-compartilhar" class="btn btn-share" onclick="compartilhar()">📲 Compartilhar Jogos</button>
-                        <a id="btn-comprar" href="https://mpago.la/1gnnpkZ" target="_blank" class="btn btn-buy">💰 COMPRAR COMPLETO</a>
-                        <button class="btn btn-clear" onclick="limparTudo()">🗑️ Limpar Tudo</button>
-                    </div>
+                    <input
+                        type="text"
+                        id="res-milhar"
+                        placeholder="Resultado..."
+                        maxlength="4"
+                        oninput="update()"
+                    >
+
                 </div>
+
+                <div class="button-group">
+
+                    <button
+                        id="btn-compartilhar"
+                        class="btn btn-share"
+                        onclick="compartilhar()"
+                    >
+                        📲 Compartilhar Jogos
+                    </button>
+
+                    <a
+                        id="btn-comprar"
+                        href="https://mpago.la/1gnnpkZ"
+                        target="_blank"
+                        class="btn btn-buy"
+                    >
+                        💰 COMPRAR COMPLETO
+                    </a>
+
+                    <button
+                        class="btn btn-clear"
+                        onclick="limparTudo()"
+                    >
+                        🗑️ Limpar Tudo
+                    </button>
+
+                </div>
+
             </div>
 
-            <div class="games-grid" id="games-list"></div>
-
-            <div class="right-col">
-                <div class="finance-panel">
-                    <table class="finance-table">
-                        <tr><td>COTAÇÃO</td><td>R$ <input type="number" id="cot" value="8000" oninput="update()"></td></tr>
-                        <tr><td>VALOR APOSTADO</td><td id="v-ap" style="color: red;">R$ 36.00</td></tr>
-                        <tr><td>VALOR POR JOGO</td><td>R$ <input type="number" id="v-jogo" value="1" oninput="update()"></td></tr>
-                        <tr><td>PRÊMIO (DIV. 24)</td><td id="v-pre">R$ 0.00</td></tr>
-                        <tr><td>LUCRO TOTAL</td><td id="v-luc">R$ -36.00</td></tr>
-                        <tr><td>ACERTOS</td><td id="count-pre">0</td></tr>
-                    </table>
-                </div>
-                <div style="text-align: center; font-weight: bold; margin-top: 10px;">VOCÊ FATUROU</div>
-                <div class="faturou-box" id="faturou-display">R$ 0.00</div>
-            </div>
         </div>
+
+        <div class="games-grid" id="games-list"></div>
+
+        <div class="right-col">
+
+            <div class="finance-panel">
+
+                <table class="finance-table">
+
+                    <tr>
+                        <td>COTAÇÃO</td>
+                        <td>
+                            R$
+                            <input type="number" id="cot" value="8000" oninput="update()">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>VALOR APOSTADO</td>
+                        <td id="v-ap" style="color:red;">
+                            R$ 36.00
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>VALOR POR JOGO</td>
+                        <td>
+                            R$
+                            <input type="number" id="v-jogo" value="1" oninput="update()">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>PRÊMIO (INVERTIDA)</td>
+                        <td id="v-pre">
+                            R$ 0.00
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>LUCRO TOTAL</td>
+                        <td id="v-luc">
+                            R$ -36.00
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>ACERTOS</td>
+                        <td id="count-pre">
+                            0
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+            <div style="text-align:center;font-weight:bold;margin-top:10px;">
+                VOCÊ FATUROU
+            </div>
+
+            <div class="faturou-box" id="faturou-display">
+                R$ 0.00
+            </div>
+
+        </div>
+
     </div>
 
-    <script>
-        // BLOQUEIO DE CÓDIGO FONTE
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123 || (e.ctrlKey && (e.keyCode == 'U'.charCodeAt(0) || e.keyCode == 'S'.charCodeAt(0)))) return false;
-            if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
-        };
+</div>
 
-        const SENHA_MESTRE = "MILHAPARESEIMPARES10";
-        let userType = "none";
-        let jogosAtuais = [];
+<script>
 
-        window.onload = function() {
-            const auth = localStorage.getItem('milha_auth_final');
-            let trials = parseInt(localStorage.getItem('trial_count_final') || "3");
-            document.getElementById('trial-info').innerText = `Acessos grátis restantes: ${trials}`;
-            if (auth === 'full') liberarSite('full');
-            else if (trials <= 0) {
-                document.getElementById('btn-teste').style.display = 'none';
-                document.getElementById('trial-info').innerText = "Acessos esgotados!";
+document.onkeydown = function(e){
+
+    if(
+        e.keyCode == 123 ||
+        (e.ctrlKey && (
+            e.keyCode == 'U'.charCodeAt(0) ||
+            e.keyCode == 'S'.charCodeAt(0)
+        ))
+    ){
+        return false;
+    }
+
+    if(
+        e.ctrlKey &&
+        e.shiftKey &&
+        (
+            e.keyCode == 'I'.charCodeAt(0) ||
+            e.keyCode == 'J'.charCodeAt(0)
+        )
+    ){
+        return false;
+    }
+};
+
+const SENHA_MESTRE = "MILHAPARESEIMPARES10";
+
+let userType = "none";
+let jogosAtuais = [];
+
+window.onload = function(){
+
+    const auth = localStorage.getItem('milha_auth_v8');
+    let trials = parseInt(localStorage.getItem('trial_count_v8') || "3");
+
+    document.getElementById('trial-info').innerText =
+        `Acessos grátis: ${trials}`;
+
+    if(auth === 'full'){
+        liberarSite('full');
+    }
+
+    if(trials <= 0){
+        document.getElementById('btn-teste').style.display = 'none';
+        document.getElementById('trial-info').innerText =
+            "Acessos esgotados!";
+    }
+};
+
+function verificarSenha(){
+
+    const digitada =
+        document.getElementById('pass-input').value.trim();
+
+    if(digitada === SENHA_MESTRE){
+
+        localStorage.setItem('milha_auth_v8', 'full');
+
+        liberarSite('full');
+
+    }else{
+
+        alert("Senha Incorreta!");
+    }
+}
+
+function acessoTeste(){
+
+    let trials =
+        parseInt(localStorage.getItem('trial_count_v8') || "3");
+
+    if(trials > 0){
+
+        trials--;
+
+        localStorage.setItem('trial_count_v8', trials);
+
+        liberarSite('trial');
+
+    }else{
+
+        alert("Acessos de teste esgotados!");
+    }
+}
+
+function liberarSite(type){
+
+    userType = type;
+
+    document.getElementById('login-overlay').style.display =
+        'none';
+
+    document.getElementById('site-content').style.display =
+        'block';
+
+    document.getElementById('btn-compartilhar').style.display =
+        (type === 'full') ? 'flex' : 'none';
+
+    document.getElementById('btn-comprar').style.display =
+        (type === 'trial') ? 'flex' : 'none';
+
+    update();
+}
+
+function update(){
+
+    const odds =
+        Array.from(document.querySelectorAll('.in-odd'))
+        .map(i => i.value);
+
+    const evens =
+        Array.from(document.querySelectorAll('.in-even'))
+        .map(i => i.value);
+
+    const resVal =
+        document.getElementById('res-milhar').value;
+
+    const vJogo =
+        parseFloat(document.getElementById('v-jogo').value) || 0;
+
+    const cot =
+        parseFloat(document.getElementById('cot').value) || 0;
+
+    const comboO = [];
+
+    for(let i=0;i<4;i++){
+        for(let j=i+1;j<4;j++){
+            comboO.push([odds[i],odds[j]]);
+        }
+    }
+
+    const comboE = [];
+
+    for(let i=0;i<4;i++){
+        for(let j=i+1;j<4;j++){
+            comboE.push([evens[i],evens[j]]);
+        }
+    }
+
+    jogosAtuais = [];
+
+    comboO.forEach(o =>
+        comboE.forEach(e =>
+            jogosAtuais.push([...o,...e].sort())
+        )
+    );
+
+    const list =
+        document.getElementById('games-list');
+
+    list.innerHTML = '';
+
+    let winCount = 0;
+
+    jogosAtuais.forEach((g,i)=>{
+
+        let isWin = false;
+
+        if(resVal.length === 4){
+
+            let rS =
+                resVal.split('').sort().join('');
+
+            let gS =
+                g.join('').split('').sort().join('');
+
+            if(rS === gS){
+                isWin = true;
+                winCount++;
             }
-            update();
         }
 
-        function verificarSenha() {
-            if (document.getElementById('pass-input').value === SENHA_MESTRE) {
-                localStorage.setItem('milha_auth_final', 'full');
-                liberarSite('full');
-            } else alert("Senha Incorreta!");
-        }
+        if(userType === 'trial' && i >= 18){
 
-        function acessoTeste() {
-            let trials = parseInt(localStorage.getItem('trial_count_final') || "3");
-            if (trials > 0) {
-                trials--;
-                localStorage.setItem('trial_count_final', trials);
-                liberarSite('trial');
+            if(i === 18){
+
+                const msg =
+                    document.createElement('div');
+
+                msg.className = 'locked-msg';
+
+                msg.innerText =
+                    "🔒 COMPRE PARA VER OS OUTROS 18 JOGOS!";
+
+                list.appendChild(msg);
             }
+
+            return;
         }
 
-        function liberarSite(type) {
-            userType = type;
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('site-content').style.display = 'block';
-            document.getElementById('btn-compartilhar').style.display = (type === 'full') ? 'flex' : 'none';
-            document.getElementById('btn-comprar').style.display = (type === 'trial') ? 'flex' : 'none';
-            update(); // Força atualização para aplicar restrição de visualização
-        }
+        const div =
+            document.createElement('div');
 
-        function update() {
-            const odds = Array.from(document.querySelectorAll('.in-odd')).map(i => i.value);
-            const evens = Array.from(document.querySelectorAll('.in-even')).map(i => i.value);
-            const resVal = document.getElementById('res-milhar').value;
-            const vJogo = parseFloat(document.getElementById('v-jogo').value) || 0;
-            const cot = parseFloat(document.getElementById('cot').value) || 0;
+        div.className =
+            'game-row' + (isWin ? ' winner' : '');
 
-            const comboO = [];
-            for(let i=0; i<4; i++) for(let j=i+1; j<4; j++) comboO.push([odds[i], odds[j]]);
-            const comboE = [];
-            for(let i=0; i<4; i++) for(let j=i+1; j<4; j++) comboE.push([evens[i], evens[j]]);
-            
-            jogosAtuais = [];
-            comboO.forEach(o => comboE.forEach(e => jogosAtuais.push([...o, ...e].sort())));
+        div.innerHTML = `
+            <div class="game-id">
+                J ${i+1}
+            </div>
 
-            const list = document.getElementById('games-list');
-            list.innerHTML = '';
-            let winCount = 0;
+            <div class="game-nums">
+                <span>${g[0]}</span>
+                <span>${g[1]}</span>
+                <span>${g[2]}</span>
+                <span>${g[3]}</span>
+            </div>
+        `;
 
-            jogosAtuais.forEach((g, i) => {
-                let isWin = false;
-                if(resVal.length === 4) {
-                    let rS = resVal.split('').sort().join('');
-                    let gS = g.join('').split('').sort().join('');
-                    if(rS === gS) { isWin = true; winCount++; }
-                }
+        list.appendChild(div);
+    });
 
-                // CONTROLO DE EXIBIÇÃO: ESCONDER APÓS O JOGO 18 SE FOR TESTE
-                if (userType === 'trial' && i >= 18) {
-                    if (i === 18) {
-                        const msg = document.createElement('div');
-                        msg.className = 'locked-msg';
-                        msg.innerText = "🔒 COMPRE A VERSÃO COMPLETA PARA VER OS OUTROS 18 JOGOS E COMPARTILHAR!";
-                        list.appendChild(msg);
-                    }
-                    return; // Para a execução do loop para este item
-                }
+    const premioAcerto =
+        (cot * vJogo) / 24;
 
-                const div = document.createElement('div');
-                div.className = 'game-row' + (isWin ? ' winner' : '');
-                div.innerHTML = `<div class="game-id">J ${i+1}</div><div class="game-nums"><span>${g[0]}</span><span>${g[1]}</span><span>${g[2]}</span><span>${g[3]}</span></div>`;
-                list.appendChild(div);
-            });
+    const totalPre =
+        winCount * premioAcerto;
 
-            const premioAcerto = (cot * vJogo) / 24;
-            const totalPre = winCount * premioAcerto;
-            const totalAp = 36 * vJogo;
-            const lucro = totalPre - totalAp;
+    const totalAp =
+        36 * vJogo;
 
-            document.getElementById('v-ap').innerText = `R$ ${totalAp.toFixed(2)}`;
-            document.getElementById('v-pre').innerText = `R$ ${totalPre.toFixed(2)}`;
-            document.getElementById('v-luc').innerText = `R$ ${lucro.toFixed(2)}`;
-            document.getElementById('count-pre').innerText = winCount;
-            document.getElementById('faturou-display').innerText = `R$ ${totalPre.toFixed(2)}`;
-            document.getElementById('v-luc').style.color = lucro >= 0 ? 'green' : 'red';
-        }
+    const lucro =
+        totalPre - totalAp;
 
-        function compartilhar() {
-            let txt = "🚀 *MEUS JOGOS - FECHAMENTO MILHAR*\n\n";
-            jogosAtuais.forEach((g, i) => txt += `J${i+1}: [ ${g.join(' ')} ]\n`);
-            if (navigator.share) navigator.share({ title: 'Jogos', text: txt });
-            else { navigator.clipboard.writeText(txt); alert("Copiado!"); }
-        }
+    document.getElementById('v-ap').innerText =
+        `R$ ${totalAp.toFixed(2)}`;
 
-        function limparTudo() {
-            if(confirm("Deseja limpar todos os números?")) {
-                document.querySelectorAll('.in-odd, .in-even, #res-milhar').forEach(i => i.value = '');
-                update();
-            }
-        }
-    </script>
+    document.getElementById('v-pre').innerText =
+        `R$ ${totalPre.toFixed(2)}`;
+
+    document.getElementById('v-luc').innerText =
+        `R$ ${lucro.toFixed(2)}`;
+
+    document.getElementById('count-pre').innerText =
+        winCount;
+
+    document.getElementById('faturou-display').innerText =
+        `R$ ${totalPre.toFixed(2)}`;
+
+    document.getElementById('v-luc').style.color =
+        lucro >= 0 ? 'green' : 'red';
+}
+
+function compartilhar(){
+
+    if(jogosAtuais.length === 0){
+        return;
+    }
+
+    let txt =
+        jogosAtuais.map(g => g.join('')).join(' ');
+
+    if(navigator.share){
+
+        navigator.share({
+            title:'Jogos',
+            text:txt
+        });
+
+    }else{
+
+        navigator.clipboard.writeText(txt);
+
+        alert("Milhares copiadas!");
+    }
+}
+
+function limparTudo(){
+
+    if(confirm("Limpar tudo?")){
+
+        document
+        .querySelectorAll('.in-odd, .in-even, #res-milhar')
+        .forEach(i => i.value = '');
+
+        update();
+    }
+}
+
+</script>
+
 </body>
 </html>
